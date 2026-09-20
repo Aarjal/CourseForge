@@ -1,4 +1,4 @@
-.counter {
+/* .counter {
   font-size: 16px;
   padding: 5px 10px;
   border-radius: 5px;
@@ -181,4 +181,92 @@
     right: 0;
     border-right-color: var(--border);
   }
+} */
+
+
+
+
+
+
+/* define all colors as css vars so that its adjust color schemaa */
+:root {
+  --ink: #25251f;
+  --muted: #77776e;
+  --cream: #f4f1e9;
+  --paper: #fffdf8;
+  --green: #285b47;
+  --green-dark: #1e4435;
+  --green-soft: #dce9df;
+  --gold: #d5a84d;
+  --line: #dedbd0;
+  --danger: #a64945;
 }
+
+
+*{
+  box-sizing: border-box;
+}
+
+body{
+  background:var(--cream);
+  color:var(--ink);
+}
+
+button,input{
+  font:inherit;
+}
+
+button{
+  cursor:pointer;
+}
+
+/* starting point for main application styles */
+.app-shell{
+  min-height:100vh;
+  background:
+    linear-gradient(rgba(255, 253, 248, 0.8), rgba(255, 253, 248, 0.8)),
+    repeating-linear-gradient(
+      0deg,
+      transparent 0,
+      transparent 38px,
+      rgba(41, 96, 74, 0.035) 39px
+    );
+     
+}
+
+.top{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  min-height:75px;
+  padding:15px 7vw;
+  border-bottom:1px solid var(--line);
+  background:rgba(255, 253, 248, 0.94)
+}
+
+.wordmark{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  padding: 0;
+  border:0;
+  background:transparent;
+  color:var(--ink);
+  font-size:16px;
+  font-weight:800;
+  letter-spacing:.5px;
+}
+
+.brand-mark{
+  display:grid;
+  width:43px;
+  height:43px;
+  place-items:center;
+  border-radius:50%;
+  background:var(--green);
+  color:white;
+  font-size:14px;
+  font-weight:900;
+}
+
+
