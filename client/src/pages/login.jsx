@@ -4,7 +4,11 @@ function Login({handle_login_event, loginerr}) {
 <main className="login-page">
 
     <section className="login-panel">
-        <div className="brand-mark">CF</div>
+        <img
+            className="login-logo"
+            src="/logo.png"
+            alt="CourseForge"
+            />
         <p className="eye">COURSEFORGE</p>
         <h1>Build Your Future with skills that move you forward</h1>
         <p className="muted">
