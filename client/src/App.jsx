@@ -293,10 +293,6 @@ function App() {
 
   
 
-}
-
-
-
 
 function Coursecard({course,progress,onOpen}){
   return(
