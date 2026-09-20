@@ -1,9 +1,3 @@
-<!--
-HOW TO USE THIS TEMPLATE
-- Everything in [BRACKETS] is a placeholder — replace it with your own words.
-- Italic notes like *(suggestion: ...)* are guidance for you, delete them once you've written the real content.
-- Delete this whole comment block before you commit.
--->
 
 <p align="center">
   <img src="client/public/favicon.png" alt="CourseForge logo" width="120"/>
@@ -21,6 +15,7 @@ We're still in building phase as this is the first week of development. The grou
 ---
 
 
+
 ## About CourseForge
 
 CourseForge is a full-stack web application where-
@@ -33,6 +28,7 @@ And ideally later on..
 
 
 ---
+
 
 
 ## App Features
@@ -53,6 +49,7 @@ And ideally later on..
 ---
 
 
+
 ## Tech Stack
 
 - React with Vite - Frontend
@@ -63,11 +60,13 @@ And ideally later on..
 
 ---
 
+
 ## Some Glimpses
 
 [{(BIRAJJ WILL ADD HOME PAGE SCREENSHOT HERE AND REMOVE THIS LINE)}]}
 
 ---
+
 
 
 ## Getting Started
@@ -98,6 +97,7 @@ npm start
 ```
 
 ---
+
 
 
 Built as part of **[Thirdspace YSWS]** with great love and effort :)
