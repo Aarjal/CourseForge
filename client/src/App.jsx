@@ -3,6 +3,8 @@ import './App.css'
 
 
 
+// add array of courses with chapters and challenges
+
 const courses_study = [
     { id: 1, 
       name: "Intro to Web Dev", 
@@ -94,7 +96,7 @@ const courses_study = [
     },
   ];
 
-
+// quiz array
   const quizques=[
 
     {
@@ -149,6 +151,8 @@ const courses_study = [
     }
   ]
 
+
+  // get status from local storage so that backend is not required fot this ship(remove in other ship)
 function get_saved_status(){
   const saved=localStorage.getItem("course-status");
   
@@ -163,7 +167,7 @@ function get_saved_status(){
 
   
 
-
+//main app function 
 function App() {
   const[app_state, setAppState]=useState(get_saved_status());
   const [screen, setScreen]=useState("home");
