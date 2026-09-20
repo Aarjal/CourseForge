@@ -6,7 +6,7 @@ HOW TO USE THIS TEMPLATE
 -->
 
 <p align="center">
-  <img src="client/assets/favicon.png" alt="CourseForge logo" width="120"/>
+  <img src="client/public/favicon.png" alt="CourseForge logo" width="120"/>
 </p>
 
 <h1 align="center">CourseForge</h1>
@@ -20,6 +20,7 @@ We're still in building phase as this is the first week of development. The grou
 
 ---
 
+
 ## About CourseForge
 
 CourseForge is a full-stack web application where-
@@ -32,6 +33,7 @@ And ideally later on..
 
 
 ---
+
 
 ## App Features
 
@@ -50,6 +52,7 @@ And ideally later on..
 
 ---
 
+
 ## Tech Stack
 
 - React with Vite - Frontend
@@ -66,7 +69,9 @@ And ideally later on..
 
 ---
 
+
 ## Getting Started
+
 
 ### Prerequisites
 - None for now 
@@ -93,6 +98,7 @@ npm start
 ```
 
 ---
+
 
 Built as part of **[Thirdspace YSWS]** with great love and effort :)
 
