@@ -9,6 +9,7 @@
 <p>
 <p>
 <p>
+  
 ## Current Status
 
 We're still in building phase as this is the first week of development. The groundwork for the application is there but there's yet to add lots and lots of functionality. However, a simple general workflow is still possible with the current version. The UI/UX isn't there yet indeed but for now we're just happy with how it works.
@@ -17,6 +18,7 @@ We're still in building phase as this is the first week of development. The grou
 <p>
 <p>
 <p>
+  
 ## About CourseForge
 
 CourseForge is a full-stack web application where-
@@ -31,6 +33,7 @@ And ideally later on..
 <p>
 <p>
 <p>
+  
 ## App Features
 
 **Student side**
@@ -50,6 +53,7 @@ And ideally later on..
 <p>
 <p>
 <p>
+  
 ## Tech Stack
 
 - React with Vite - Frontend
@@ -62,6 +66,7 @@ And ideally later on..
 <p>
 <p>
 <p>
+  
 ## Some Glimpses
 
 [{(BIRAJJ WILL ADD HOME PAGE SCREENSHOT HERE AND REMOVE THIS LINE)}]}
@@ -70,6 +75,7 @@ And ideally later on..
 <p>
 <p>
 <p>
+  
 ## Getting Started
 
 
@@ -101,5 +107,6 @@ npm start
 <p>
 <p>
 <p>
+  
 Built as part of **[Thirdspace YSWS]** with great love and effort :)
 
