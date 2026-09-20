@@ -560,3 +560,79 @@ legend {
   color: var(--muted);
   font-size: 12px;
 }
+
+/* smaller screens */
+
+@media (max-width: 700px) {
+  .top {
+    align-items: flex-start;
+    gap: 18px;
+    padding: 15px 20px;
+  }
+
+  .top nav {
+    align-items: flex-end;
+    flex-direction: column;
+    gap: 5px;
+  }
+
+  .main-content {
+    width: calc(100% - 32px);
+    padding: 44px 0 70px;
+  }
+
+  .welcome-sec,
+  .course-hero,
+  .quiz-callout {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .welcome-sec h1 {
+    font-size: 48px;
+  }
+
+  .course-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .chapter-row {
+    align-items: flex-start;
+    flex-wrap: wrap;
+  }
+
+  .chapter-info {
+    min-width: 60%;
+  }
+
+  .card-meta {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 5px;
+  }
+
+  .login-panel {
+    padding: 34px 25px;
+  }
+}
+
+@media (max-width: 430px) {
+  .site-logo {
+    width: 32px;
+    height: 32px;
+  }
+
+  .site-name {
+    font-size: 14px;
+  }
+
+  h1,
+  .welcome-sec h1 {
+    font-size: 42px;
+  }
+
+  .quiz-callout,
+  .course-card-content {
+    padding: 22px;
+  }
+}
