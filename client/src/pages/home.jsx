@@ -13,8 +13,15 @@ function Home({app_state,
   quizques,
   ans,
   setAns,
-  quiz_res,}) {
+    quiz_res,
+    search,
+    setSearch,
+}) {
 // <!-- make simple home page -->
+    const visible_courses = courses_study.filter((course) =>
+        course.name.toLowerCase().includes(search.toLowerCase()),
+    )
+
 return(
 <div className="app-shell">
     <header className="top">
@@ -69,7 +76,7 @@ return(
         <section className="stats-row">
             <div>
                 <strong>
-                    {/* display the t/otal number of completed chapters across all categories flattening data*/}
+                    {/* display the total number of completed chapters across all categories flattening data*/}
                     {Object.values(app_state.completed_chap).flat().length}
                 </strong>
                 <span>Completed Chapters</span>
@@ -112,9 +119,49 @@ return(
                           setScreen('course')
                         }}  />
                     ))}
-                </div> )}
-                </>
+                </div>
+            )}
             </section>
+        </>
+        )}
+
+        {screen === 'browse' && (
+            <section>
+                <div className="section-head">
+                    <p className="eye">Course Library</p>
+                    <h1>Browse Courses</h1>
+                </div>
+                <input
+                    className="search-input"
+                    type="search"
+                    value={search}
+                    onChange={(event) => setSearch(event.target.value)}
+                    placeholder="Search courses"
+                    aria-label="Search courses"
+                />
+                {visible_courses.length === 0 ? (
+                    <div className="empty-state">
+                        <h3>No matching courses</h3>
+                        <p>Try a different search term.</p>
+                    </div>
+                ) : (
+                    <div className="course-grid">
+                        {visible_courses.map((course) => (
+                            <Coursecard
+                                key={course.id}
+                                course={course}
+                                progress={chap_progress(course)}
+                                onOpen={() => {
+                                    setSelecCourseId(course.id)
+                                    setScreen('course')
+                                }}
+                            />
+                        ))}
+                    </div>
+                )}
+            </section>
+        )}
+
                 {screen==='course' && selected_course && (
     
                     <>
@@ -275,15 +322,43 @@ return(
                     </section>
                 )}
 
-
-
-
-
-        )}
     </main>
 
 </div>
 )
+}
+
+
+function Coursecard({course,progress,onOpen}){
+  return(
+      <article className="course-card">
+          <div className="course-cover">
+              <span>{course.category}</span>
+              <strong>{course.id}</strong> 
+          </div>
+
+          <div className="course-card-content">
+              <span className="tag">{course.level}</span>
+              <h3>{course.name}</h3>
+              <p>{course.desc}</p>
+
+              <div className="card-meta">
+                  <span>{course.chapters.length} chapters</span>
+                  <span>{progress}% complete</span>
+                  <span>{course.challenge.length} challenge</span>
+              </div>
+
+              <div className="progress-track">
+                  {/* <!-- dont forget to add css for progress bar. its like battery indicator in mobile phones(the % of progres. is taken from  progress variable) --> */}
+                  <div className="progress-fill" style={{ width: `${progress}%` }}></div>
+              </div>
+
+              <button className="secondary-button full-width" onClick={onOpen}>View Course</button>
+                  
+
+          </div>
+      </article>
+  )
 }
 
 export default Home;
