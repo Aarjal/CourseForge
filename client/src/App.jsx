@@ -10,7 +10,7 @@ import Home from "../pages/home";
 const courses_study = [
     { id: 1, 
       name: "Intro to Web Dev", 
-      Category: "Development", 
+      category: "Development", 
       level: "Beginner", 
       desc:"Learn basics of web development by learning basic HTML and CSS.You will also learn how websites work and how to make own website from scratch. ",
       chapters: [
@@ -47,7 +47,7 @@ const courses_study = [
     },
     { id: 2, 
       name: "JS(javascript) essentials for beginners", 
-      Category: "Programming", 
+      category: "Programming", 
       level: "Intermediate", 
       desc:"Build strong foundation in Js variables, functions, arrays and events. You will also learn how to make your website interactive using JS.",
       chapters: [
@@ -263,13 +263,31 @@ function App() {
 
         // link home.html and login.html
 
-  if(!app_state.loggedin && screen!=="login"){
+  if(!app_state.loggedin){
     return(
-      <Login />
+      <Login
+      handle_login_event={handle_login_event}
+      loginerr={loginerr} />
 
-    )
+    )}
 
-    return(<Home />)
+    return(<Home
+      app_state={app_state}
+      screen={screen}
+      setScreen={setScreen}
+      handle_logout_event={handle_logout_event}
+      courses_study={courses_study}
+      chap_progress={chap_progress}
+      setSelecCourseId={setSelecCourseId}
+      selected_course={selected_course}
+      enroll_course={enroll_course}
+      chap_comp={chap_comp}
+      submit_quiz={submit_quiz}
+      quizques={quizques}
+      ans={ans}
+      setAns={setAns}
+      quiz_res={quiz_res}
+      />)
 
   }
 

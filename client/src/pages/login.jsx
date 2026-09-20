@@ -1,5 +1,6 @@
 // <!-- make simple login page -->
-function Login() {
+function Login({handle_login_event, loginerr}) {
+    return (
 <main className="login-page">
 
     <section className="login-panel">
@@ -31,7 +32,7 @@ function Login() {
 
     </section>
 </main>
-
+    )
 }
 
 

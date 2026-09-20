@@ -1,5 +1,19 @@
 
-function Home() {
+function Home({app_state,
+  screen,
+  setScreen,
+  handle_logout_event,
+  courses_study,
+  chap_progress,
+  setSelecCourseId,
+  selected_course,
+  enroll_course,
+  chap_comp,
+  submit_quiz,
+  quizques,
+  ans,
+  setAns,
+  quiz_res,}) {
 // <!-- make simple home page -->
 return(
 <div className="app-shell">
@@ -98,9 +112,9 @@ return(
                           setScreen('course')
                         }}  />
                     ))}
-                </div> 
+                </div> )}
                 </>
-            )}
+            </section>
                 {screen==='course' && selected_course && (
     
                     <>
@@ -113,7 +127,7 @@ return(
                         <section className="course-hero">
                             <div>
                                 {/* <!-- display the course type --> */}
-                                <p className="eye"> {selected_course.type}</p>
+                                <p className="eye"> {selected_course.category}</p>
                                 <h1>{selected_course.name}</h1>
                                 <p className="muted">{selected_course.desc}</p>
                                 <span className="tag">{selected_course.level}</span>
@@ -124,7 +138,7 @@ return(
                  {/* <!-- tell to enroll if not enrolled --> */}
                             {!app_state.en_courses.includes(selected_course.id) ?(
                                 <button className="primary-button" 
-                                onClick={()=> enroll(selected_course.id)}
+                                onClick={()=> enroll_course(selected_course.id)}
                                 type="button">
                                     Enroll in this course
                                 </button>
@@ -154,7 +168,7 @@ return(
                             <div className="chapter-list">
                                 {selected_course.chapters.map((chapter,index)=>{
                                     const isEnrolled= app_state.en_courses.includes(selected_course.id,)
-                                    const isComplete= app_state.completed_chap[selected_course.id].includes(chapter.id,)
+                                    const isComplete= app_state.completed_chap[selected_course.id]?.includes(chapter.id,) ?? false
                                     const isLocked= !chapter.preview && !isEnrolled
 
                                     return(
@@ -162,7 +176,7 @@ return(
                                             <div className="chapter-number">0{index+1}</div>
 
                                             <div className="chapter-info">
-                                                <strong>{chapter.name}</strong>
+                                                <strong>{chapter.title}</strong>
                                                 <span>{chapter.duration}</span>
                                             </div>
                                             {isLocked ? (
@@ -183,7 +197,7 @@ return(
 
                         </section>
 
-// <!-- add quiz logic here -->
+ {/* add quiz logic here */}
                         <section className="quiz-callout">
                             <div>
                                 <p className="eye">Test Your Knowledge</p>
@@ -218,7 +232,7 @@ return(
 
                         {/* <!-- validate answers --> */}
                         <form onSubmit={submit_quiz}>
-                            {quiz_ques.map((ques,index)=>(
+                            {quizques.map((ques,index)=>(
                                 <fieldset key={ques.question}>
                                     <legend>
                                         {index+1}. {ques.question}
