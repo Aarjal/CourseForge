@@ -1,122 +1,270 @@
 import { useState } from 'react'
-import heroImg from './assets/hero.png'
-import reactLogo from './assets/react.svg'
-import viteLogo from './assets/vite.svg'
 import './App.css'
 
-function App() {
-  const [count, setCount] = useState(0)
 
-  return (
-    <>
-      <section id="center">
-        <div className="hero">
-          <img src={heroImg} className="base" width="170" height="179" alt="" />
-          <img src={reactLogo} className="framework" alt="React logo" />
-          <img src={viteLogo} className="vite" alt="Vite logo" />
-        </div>
-        <div>
-          <h1>Get started</h1>
-          <p>
-            Edit <code>src/App.jsx</code> and save to test <code>HMR</code>
-          </p>
-        </div>
-        <button
-          type="button"
-          className="counter"
-          onClick={() => setCount((count) => count + 1)}
-        >
-          Count is {count}
-        </button>
-      </section>
 
-      <div className="ticks"></div>
+const courses_study = [
+    { id: 1, 
+      name: "Intro to Web Dev", 
+      Category: "Development", 
+      level: "Beginner", 
+      desc:"Learn basics of web development by learning basic HTML and CSS.You will also learn how websites work and how to make own website from scratch. ",
+      chapters: [
+        {id:1,
+          title:"How web works??",
+          duration: "15 mins",
+          preview:true,
+          category:"Theory",
+        },
+        {
+          id:2,
+          title:"HTML foundations",
+          duration: "20 mins",
+          preview:false,
+          category:"Theory",
+        },
+        {
+          id:3,
+          title:"CSS foundations",
+          duration: "25 mins",
+          preview:false,
+          category:"Theory",
+        },
+      ],
+      challenge:[
+        {
+          id:1,
+          title:"Build a simple website using HTML and CSS",
+          duration: "30 mins",
+          preview:false,
+          category:"Lab",
+        },
+      ],
+    },
+    { id: 2, 
+      name: "JS(javascript) essentials for beginners", 
+      Category: "Programming", 
+      level: "Intermediate", 
+      desc:"Build strong foundation in Js variables, functions, arrayss and events. You will also learn how to make your website interactive using JS.",
+      chapters: [
+        {id:1,
+          title:"Variables and Values",
+          duration: "15 mins",
+          preview:true,
+          category:"Theory",
+        },
+        {
+          id:2,
+          title:"Functions and Events",
+          duration: "25 mins",
+          preview:false,
+          category:"Theory",
+        },
+        {
+          id:3,
+          title:"Arrays and Loops",
+          duration: "30 mins",
+          preview:false,
+          category:"Theory",
+        },
+        {
+          id:4,
+          title: "Events and Ineraction",
+          duration: "28 mins",
+          preview:false,
+          category:"Theory",
+        }
+      ],
+      challenge:[
+        {
+          id:1,
+          title:"Build a simple calc. using JS foundations. ",
+          duration: "30 mins",
+          preview:false,
+          category:"Lab",
+        },
+        {
+          id:2,
+          title:"Build a website that take input and validate it using JS (also use html and css) ",
+          duration: "40 mins",
+          preview:false,
+          category:"Lab",
+        }
+      ]
+    },
+  ];
 
-      <section id="next-steps">
-        <div id="docs">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#documentation-icon"></use>
-          </svg>
-          <h2>Documentation</h2>
-          <p>Your questions, answered</p>
-          <ul>
-            <li>
-              <a href="https://vite.dev/" target="_blank">
-                <img className="logo" src={viteLogo} alt="" />
-                Explore Vite
-              </a>
-            </li>
-            <li>
-              <a href="https://react.dev/" target="_blank">
-                <img className="button-icon" src={reactLogo} alt="" />
-                Learn more
-              </a>
-            </li>
-          </ul>
-        </div>
-        <div id="social">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#social-icon"></use>
-          </svg>
-          <h2>Connect with us</h2>
-          <p>Join the Vite community</p>
-          <ul>
-            <li>
-              <a href="https://github.com/vitejs/vite" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#github-icon"></use>
-                </svg>
-                GitHub
-              </a>
-            </li>
-            <li>
-              <a href="https://chat.vite.dev/" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#discord-icon"></use>
-                </svg>
-                Discord
-              </a>
-            </li>
-            <li>
-              <a href="https://x.com/vite_js" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#x-icon"></use>
-                </svg>
-                X.com
-              </a>
-            </li>
-            <li>
-              <a href="https://bsky.app/profile/vite.dev" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#bluesky-icon"></use>
-                </svg>
-                Bluesky
-              </a>
-            </li>
-          </ul>
-        </div>
-      </section>
 
-      <div className="ticks"></div>
-      <section id="spacer"></section>
-    </>
-  )
+  const quizques=[
+
+    {
+      question: "What does HTML stand for?",
+      options: [
+        "Hyper Text Markup Language",
+        "Home Tool Markup Language",
+        "Hyperlinks and Text Markup Language",
+        "Hyperlinking Text Marking Language"
+      ],
+      ans: 0
+    },
+    {
+      question:"What does HTML define?",
+      options:[
+        "database",
+        "Server Hardware",
+        "Webpage Structure",
+        "Webpage Design"
+      ],
+      ans:2
+    },
+    {
+      question:"What is the correct HTML element for inserting a line break?",
+      options:[
+        "<break>",
+        "<br>",
+        "<lb>",
+        "<line>"
+      ],
+      ans:1
+    },
+    {
+      question:"What doe CSS control?",
+      options:[
+        "HTML Structure",
+        "HTML Content",
+        "HTML Style",
+        "HTML Functionality"
+      ],
+      ans:2
+    },
+    {
+      question:"Which technology adds interactivity to a webpage?",
+      options:[
+        "HTML",
+        "CSS",
+        "Python",
+        "JavaScript",
+      ],
+      ans:3
+    }
+  ]
+
+function get_saved_status(){
+  const saved=localStorage.getItem("course-status");
+  
+  return saved ? JSON.parse(saved) : {
+    loggedin: false,
+    en_courses:[],
+    completed_chap:[],
+    quiz_done: false,
+  };
 }
+
+
+  
+
+
+function App() {
+  const[app_state, setAppState]=useState(get_saved_status());
+  const [screen, setScreen]=useState("home");
+  const[selec_course_id, setSelecCourseId]=useState(null);
+  const[search, setSearch]=useState("");
+  const[loginerr, setLoginErr]=useState("");
+  const[ans, setAns]=useState({});
+  const[quiz_res, setQuizRes]=useState(null);
+
+  const selected_course=courses.find(
+    (course)=> course.id===selec_course_id,
+  );
+
+
+  function saveState(next_state){
+    setAppState(next_state);
+    localStorage.setItem("course-status", JSON.stringify(next_state));
+  }
+
+  function handle_login_event(event){
+    event.preventDefault();
+
+    const form_data= new FormData(event.target);
+    const email=form_data.get("email");
+    const password=form_data.get("password");
+
+    if(!email || !password){
+      setLoginErr("Enter an email and password to continue");
+      return;
+    }
+
+    saveState({...app_state, loggedin:true});
+    setScreen("home");
+  }
+    function handle_logout_event(){
+      saveState({...app_state, loggedin:false});
+      setScreen("login");
+    }
+  
+  function enroll_course(course_id){
+    if(app_state.en_courses.includes(course_id)){
+      return;
+    }
+    saveState({
+      ...app_state, 
+      en_courses: [...app_state.en_courses, course_id]
+    });
+
+  }
+
+  function chap_comp(course_id, chap_id){
+    const progress=app_state.completed_chap[course_id] || [];
+
+    if(progress.includes(chap_id)){
+      return;
+    }
+
+    saveState({
+      ...app_state,
+      completed_chap:{...app_state.completed_chap,
+        [course_id]: [...progress, chap_id],
+      }
+    })
+  }
+
+  function chap_progress(course){
+    const finished=
+    app_state.completed_chap[course.id]?.length || 0;
+
+    return Math.round((finished/course.chapters.length)*100);
+  }
+
+  function submit_quiz(event){
+    event.preventDefault();
+    let sc=0;
+    quizques.forEach((q,index)=>{
+      if(Number(ans[index])===q.ans){
+        sc++;
+      }
+    })
+    setQuizRes(sc);
+
+    if(sc=== quizques.length){
+      saveState({...app_state, quiz_done:true});
+    }
+  }
+
+  const courses_seen=courses_study.filter((course)=>
+    course.title.toLowerCase().includes(search.toLowerCase())
+  );
+
+  if(!app_state.loggedin && screen!=="login"){
+    return(
+
+    )
+
+  }
+
+  
+
+}
+
 
 export default App
