@@ -368,7 +368,86 @@ p {
   color: var(--muted);
 }
 
+/* course details */
 
+.enrolled-label {
+  color: var(--green);
+  font-weight: 800;
+}
+
+.chapter-section {
+  margin-bottom: 50px;
+}
+
+.chapter-list {
+  margin-top: 24px;
+  border-top: 1px solid var(--line);
+  background: var(--paper);
+}
+
+.chapter-row {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  padding: 20px;
+  border-bottom: 1px solid var(--line);
+}
+
+.chapter-number {
+  min-width: 34px;
+  color: var(--green);
+  font-family: Georgia, 'Times New Roman', serif;
+  font-size: 22px;
+}
+
+.chapter-info {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.chapter-info span {
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.locked {
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.complete-button,
+.completed {
+  min-height: 36px;
+  padding: 0 12px;
+  font-size: 12px;
+}
+
+.complete-button {
+  border: 1px solid var(--green);
+  background: transparent;
+  color: var(--green);
+}
+
+.complete-button:hover {
+  background: var(--green-soft);
+}
+
+.completed {
+  border: 1px solid var(--green-soft);
+  background: var(--green-soft);
+  color: var(--green);
+}
+
+.quiz-callout {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  padding: 32px;
+  background: var(--green-soft);
+}
 
 
 
