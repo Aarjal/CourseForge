@@ -70,8 +70,12 @@ And ideally later on..
 <p>
   
 ## Some Glimpses
-<img src="client/public/Screenshot 2026-09-21 003533.jpg" alt="Home page SS" height="220" width="520"/>
-<img src="login.jpg" alt="Home page SS" height="220" width="520"/>
+<img width="857" height="766" alt="Screenshot 2026-09-21 at 12 45 44 AM" src="https://github.com/user-attachments/assets/81780ffc-2318-4abb-8dc3-837d96b791d3" />
+<img width="1244" height="775" alt="Screenshot 2026-09-21 at 12 46 22 AM" src="https://github.com/user-attachments/assets/0ab5c3f9-3e3f-4e0d-8dc9-fbd839143d2b" />
+<img width="1352" height="776" alt="Screenshot 2026-09-21 at 12 46 39 AM" src="https://github.com/user-attachments/assets/9dd9e7d0-c985-474c-a9fb-f73ca85bbc66" />
+<img width="1333" height="786" alt="Screenshot 2026-09-21 at 12 47 05 AM" src="https://github.com/user-attachments/assets/e2bdde94-2508-411d-a249-53afe822ce55" />
+
+
 
 ---
 <p>
