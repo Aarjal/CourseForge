@@ -70,7 +70,7 @@ And ideally later on..
 <p>
   
 ## Some Glimpses
-<img src="client/public/Screenshot 2026-09-21 003533.jpg" alt="Home page SS" width="220"/>
+<img src="client/public/Screenshot 2026-09-21 003533.jpg" alt="Home page SS" height="220" width="520"/>
 
 ---
 <p>
