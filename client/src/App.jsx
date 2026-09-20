@@ -1,8 +1,8 @@
 import { useState } from 'react'
 import './App.css'
 
-import Login from "../pages/login";
-import Home from "../pages/home";
+import Login from './pages/login'
+import Home from './pages/home'
 
 
 // add array of courses with chapters and challenges
@@ -172,7 +172,9 @@ function get_saved_status(){
 //main app function 
 function App() {
   const[app_state, setAppState]=useState(get_saved_status());
-  const [screen, setScreen]=useState("login");
+  const [screen, setScreen]=useState(() =>
+    get_saved_status().loggedin ? "home" : "login",
+  );
   const[selec_course_id, setSelecCourseId]=useState(null);
   const[search, setSearch]=useState("");
   const[loginerr, setLoginErr]=useState("");
@@ -257,10 +259,6 @@ function App() {
     }
   }
 
-  const courses_seen=courses_study.filter((course)=>
-    course.name.toLowerCase().includes(search.toLowerCase())
-  );
-
         // link home.html and login.html
 
   if(!app_state.loggedin){
@@ -287,6 +285,8 @@ function App() {
       ans={ans}
       setAns={setAns}
       quiz_res={quiz_res}
+      search={search}
+      setSearch={setSearch}
       />)
 
   }
@@ -294,36 +294,9 @@ function App() {
   
 
 
-function Coursecard({course,progress,onOpen}){
-  return(
-      <article className="course-card">
-          <div className="course-cover">
-              <span>{course.category}</span>
-              <strong>{course.id}</strong> 
-          </div>
 
-          <div className="course-card-content">
-              <span className="tag">{course.level}</span>
-              <h3>{course.name}</h3>
-              <p>{course.desc}</p>
 
-              <div className="card-meta">
-                  <span>{course.chapters.length} chapters</span>
-                  <span>{progress}% complete</span>
-                  <span>{course.challenge.length} challenge</span>
-              </div>
 
-              <div className="progress-track">
-                  {/* <!-- dont forget to add css for progress bar. its like battery indicator in mobile phones(the % of progres. is taken from  progress variable) --> */}
-                  <div className="progress-fill" style={{ width: `${progress}%` }}></div>
-              </div>
 
-              <button className="secondary-button full-width" onClick={onOpen}>View Course</button>
-                  
-
-          </div>
-      </article>
-  )
-}
 
 export default App
