@@ -13,6 +13,8 @@
 ## Current Status
 
 We're still in building phase as this is the first week of development. The groundwork for the application is there but there's yet to add lots and lots of functionality. However, a simple general workflow is still possible with the current version. The UI/UX isn't there yet indeed but for now we're just happy with how it works.
+The login page is just a demo version for now--  
+You may use demo email and password :)
 
 ---
 <p>
@@ -68,8 +70,7 @@ And ideally later on..
 <p>
   
 ## Some Glimpses
-
-[{(BIRAJJ WILL ADD HOME PAGE SCREENSHOT HERE AND REMOVE THIS LINE)}]}
+<img src="client/public/Screenshot 2026-09-21 003533.jpg" alt="Home page SS" width="220"/>
 
 ---
 <p>
