@@ -6,7 +6,7 @@ HOW TO USE THIS TEMPLATE
 -->
 
 <p align="center">
-  <img src="assets/favicon.png" alt="CourseForge logo" width="120"/>
+  <img src="client/assets/favicon.png" alt="CourseForge logo" width="120"/>
 </p>
 
 <h1 align="center">CourseForge</h1>
@@ -23,8 +23,10 @@ We're still in building phase as this is the first week of development. The grou
 ## About CourseForge
 
 CourseForge is a full-stack web application where-
---admins can build and design any structured courses out of respective chapters and learning materials 
+
+--admins can build and design any structured courses out of respective chapters and learning materials.  
 --students can browse, enroll, work through the available content at their own pace.
+
 And ideally later on..
   The courses will be organized and structured into different chapters, with individual places of content like( docs, recorded lectures etc.) which will be LOCKED until a student enrolls. After enrollment, the student can access their unlocked course materials, complete different quizzes of their choice and most importantly track their progress as they move through it. Admins will be able to manage the full lifecycle on their end (creating and editing courses, uploading study materials and reviewing who have enrolled).
 
@@ -54,27 +56,22 @@ And ideally later on..
 - Node JS with Express - Backend (planning)
 - Cloudinary - File storage (planning)
 - JWT - Authentication (planning)
-- Vercel and Render - Deployment
+- Vercel and Render - Deployment (planning) { for now - github pages}
 
 ---
 
 ## Some Glimpses
 
-*(suggestion: even 1–2 images of what exists now — homepage, login page — go a long way for a first ship. Use this markdown pattern:)*
-
-`![Homepage](path/to/screenshot.png)`
-
-[ADD SCREENSHOTS HERE ONCE YOU HAVE THEM]
+[{(BIRAJJ WILL ADD HOME PAGE SCREENSHOT HERE AND REMOVE THIS LINE)}]}
 
 ---
 
 ## Getting Started
 
-
 ### Prerequisites
 - None for now 
 
-### For Installation
+### Installation
 
 ```bash
 # To clone the repo
@@ -85,7 +82,6 @@ cd courseforge
 cd ../client
 npm install
 ```
-``
 
 ### Running locally
 
@@ -98,5 +94,5 @@ npm start
 
 ---
 
-Built as part of **[Thirdspace YSWS]**.
+Built as part of **[Thirdspace YSWS]** with great love and effort :)
 
