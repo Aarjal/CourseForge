@@ -27,7 +27,7 @@ return(
     <header className="top">
         {/* <!-- logo///nav --> */}
         <button className="wordmark" onClick={() => setScreen('home')} type="button">
-            <img className="site-logo" src="/logo.png" alt="CourseForge logo" />
+            <img className="site-logo" src={`${import.meta.env.BASE_URL}favicon.png`} alt="CourseForge logo" />
             <span className="site-name">CourseForge</span>
         </button>
 

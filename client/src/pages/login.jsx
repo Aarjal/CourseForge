@@ -6,7 +6,7 @@ function Login({handle_login_event, loginerr}) {
     <section className="login-panel">
         <img
             className="login-logo"
-            src="/logo.png"
+            src={`${import.meta.env.BASE_URL}logo.png`}
             alt="CourseForge"
             />
         <p className="eye">COURSEFORGE</p>
