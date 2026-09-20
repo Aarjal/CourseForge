@@ -1,7 +1,7 @@
-<!-- make simple login page -->
-
-
+// <!-- make simple login page -->
+function Login() {
 <main className="login-page">
+
     <section className="login-panel">
         <div className="brand-mark">CF</div>
         <p className="eye">COURSEFORGE</p>
@@ -24,7 +24,7 @@
             </button>
         </form>
 
-        <!-- note:::::::: remove in other ship(make it a real app) -->
+        {/* <!-- note:::::::: remove in other ship(make it a real app) --> */}
         <p className="note">
             It is a demo mode:: any email or password will work for this ship. 
         </p> 
@@ -32,3 +32,7 @@
     </section>
 </main>
 
+}
+
+
+export default Login;

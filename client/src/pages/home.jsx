@@ -1,8 +1,10 @@
-<!-- make simple home page -->
 
+function Home() {
+// <!-- make simple home page -->
+return(
 <div className="app-shell">
     <header className="top">
-        <!-- logo///nav -->
+        {/* <!-- logo///nav --> */}
         <button className="wordmark" onClick={() => setScreen('home')} type="button">
             <span className="brand-mark">CF</span>
             COURSEFORGE
@@ -30,11 +32,11 @@
     </header>
 
     <main className="main-content">
-        <!-- main cnt for home(to be updated in future) -->
+        {/* <!-- main cnt for home(to be updated in future) --> */}
         {screen === 'home'&& (
 
         <>        
-            <!-- "<>" helps to group children without extra tags like div..... -->
+            {/* <!-- "<>" helps to group children without extra tags like div..... --> */}
         <section className="welcome-sec">
             
             <div>
@@ -53,14 +55,14 @@
         <section className="stats-row">
             <div>
                 <strong>
-                    <!-- display the total number of completed chapters across all categories flattening data-->
+                    {/* display the t/otal number of completed chapters across all categories flattening data*/}
                     {Object.values(app_state.completed_chap).flat().length}
                 </strong>
                 <span>Completed Chapters</span>
             </div>
             <div>
                 <strong>
-                    <!-- 1== completed 2== not completed -->
+                    {/* 1== completed 2== not completed */}
                     {app_state.quiz_done? "1":"0"}
                 </strong>
                 <span>Quizzes Completed</span>
@@ -75,7 +77,7 @@
                 </div>
             </div>
             
-<!-- if no enrolled courses then tell to explore cources  -->
+{/* if no enrolled courses then tell to explore cources  */}
             {app_state.en_courses.length ===0?(
                 <div className="empty-state">
                     <h3>No courses yet</h3>
@@ -85,33 +87,33 @@
                     </button>
                 </div>
             ):(
-        <!-- else display the enrolled courses if someon has enrolled before by filtering it using map  -->
+        // <!-- else display the enrolled courses if someon has enrolled before by filtering it using map  -->
                 <div className="course-grid">
                     {courses_study.filter((course)=>
                         app_state.en_courses.includes(course.id),
                     ).map((course)=>(
                         <Coursecard key={course.id} course={course} progress={chap_progress(course)}
                         onOpen={() => {
-                          setSelectedCourseId(course.id)
+                          setSelecCourseId(course.id)
                           setScreen('course')
                         }}  />
                     ))}
                 </div> 
                 </>
             )}
-
                 {screen==='course' && selected_course && (
     
                     <>
                         <button className="back-button" 
                         onClick={() => setScreen('browse')}
                         type="button" >
-                            ⬅️Back to curses
+                            ⬅️Back to courses
                         </button>
 
                         <section className="course-hero">
                             <div>
-                                <p className="eye"> {selected_course.category}</p>
+                                {/* <!-- display the course type --> */}
+                                <p className="eye"> {selected_course.type}</p>
                                 <h1>{selected_course.name}</h1>
                                 <p className="muted">{selected_course.desc}</p>
                                 <span className="tag">{selected_course.level}</span>
@@ -119,7 +121,7 @@
 
 
 
-                 <!-- tell to enroll if not enrolled -->
+                 {/* <!-- tell to enroll if not enrolled --> */}
                             {!app_state.en_courses.includes(selected_course.id) ?(
                                 <button className="primary-button" 
                                 onClick={()=> enroll(selected_course.id)}
@@ -132,7 +134,7 @@
                             )}
                         </section>
 
-<!-- display chapter list -->
+{/* <!-- display chapter list --> */}
                         <section className="chapter-section">
                             <div className="section-head">
                                 <div>
@@ -166,7 +168,7 @@
                                             {isLocked ? (
                                                 <span className="locked">Locked</span>
                                             ) : (
-                                                <button className={isComplete ?'copleted':'complete-button'
+                                                <button className={isComplete ?'completed':'complete-button'}
                                                 onClick={()=> chap_comp(selected_course.id, chapter.id)}
                                                 type="button">
                                                     {isComplete ? 'Completed':'Mark as complete'}
@@ -181,10 +183,10 @@
 
                         </section>
 
-<!-- add quiz logic here -->
+// <!-- add quiz logic here -->
                         <section className="quiz-callout">
                             <div>
-                                <p clasName="eye">Test Your Knowledge</p>
+                                <p className="eye">Test Your Knowledge</p>
                                 <h2>Take the Quiz for what you've learned</h2>
                                 <p className="muted">
                                  Complete a short quiz after studying the course.
@@ -214,7 +216,7 @@
                         <h1>Web Development basics</h1>
                         <p className="muted">Answer each question, then submit your quiz.</p>
 
-                        <!-- validate answers -->
+                        {/* <!-- validate answers --> */}
                         <form onSubmit={submit_quiz}>
                             {quiz_ques.map((ques,index)=>(
                                 <fieldset key={ques.question}>
@@ -261,11 +263,13 @@
 
 
 
-        </section>
 
 
         )}
     </main>
 
 </div>
-)}
+)
+}
+
+export default Home;

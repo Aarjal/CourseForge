@@ -1,6 +1,8 @@
 import { useState } from 'react'
 import './App.css'
 
+import Login from "../pages/login";
+import Home from "../pages/home";
 
 
 // add array of courses with chapters and challenges
@@ -16,21 +18,21 @@ const courses_study = [
           title:"How web works??",
           duration: "15 mins",
           preview:true,
-          category:"Theory",
+          type:"Theory",
         },
         {
           id:2,
           title:"HTML foundations",
           duration: "20 mins",
           preview:false,
-          category:"Theory",
+          type:"Theory",
         },
         {
           id:3,
           title:"CSS foundations",
           duration: "25 mins",
           preview:false,
-          category:"Theory",
+          type:"Theory",
         },
       ],
       challenge:[
@@ -39,7 +41,7 @@ const courses_study = [
           title:"Build a simple website using HTML and CSS",
           duration: "30 mins",
           preview:false,
-          category:"Lab",
+          type:"Lab",
         },
       ],
     },
@@ -47,34 +49,34 @@ const courses_study = [
       name: "JS(javascript) essentials for beginners", 
       Category: "Programming", 
       level: "Intermediate", 
-      desc:"Build strong foundation in Js variables, functions, arrayss and events. You will also learn how to make your website interactive using JS.",
+      desc:"Build strong foundation in Js variables, functions, arrays and events. You will also learn how to make your website interactive using JS.",
       chapters: [
         {id:1,
           title:"Variables and Values",
           duration: "15 mins",
           preview:true,
-          category:"Theory",
+          type:"Theory",
         },
         {
           id:2,
           title:"Functions and Events",
           duration: "25 mins",
           preview:false,
-          category:"Theory",
+          type:"Theory",
         },
         {
           id:3,
           title:"Arrays and Loops",
           duration: "30 mins",
           preview:false,
-          category:"Theory",
+          type:"Theory",
         },
         {
           id:4,
-          title: "Events and Ineraction",
+          title: "Events and Interaction",
           duration: "28 mins",
           preview:false,
-          category:"Theory",
+          type:"Theory",
         }
       ],
       challenge:[
@@ -83,14 +85,14 @@ const courses_study = [
           title:"Build a simple calc. using JS foundations. ",
           duration: "30 mins",
           preview:false,
-          category:"Lab",
+          type:"Lab",
         },
         {
           id:2,
           title:"Build a website that take input and validate it using JS (also use html and css) ",
           duration: "40 mins",
           preview:false,
-          category:"Lab",
+          type:"Lab",
         }
       ]
     },
@@ -130,7 +132,7 @@ const courses_study = [
       ans:1
     },
     {
-      question:"What doe CSS control?",
+      question:"What does CSS control?",
       options:[
         "HTML Structure",
         "HTML Content",
@@ -159,7 +161,7 @@ function get_saved_status(){
   return saved ? JSON.parse(saved) : {
     loggedin: false,
     en_courses:[],
-    completed_chap:[],
+    completed_chap:{},
     quiz_done: false,
   };
 }
@@ -170,14 +172,14 @@ function get_saved_status(){
 //main app function 
 function App() {
   const[app_state, setAppState]=useState(get_saved_status());
-  const [screen, setScreen]=useState("home");
+  const [screen, setScreen]=useState("login");
   const[selec_course_id, setSelecCourseId]=useState(null);
   const[search, setSearch]=useState("");
   const[loginerr, setLoginErr]=useState("");
   const[ans, setAns]=useState({});
   const[quiz_res, setQuizRes]=useState(null);
 
-  const selected_course=courses.find(
+  const selected_course=courses_study.find(
     (course)=> course.id===selec_course_id,
   );
 
@@ -256,13 +258,18 @@ function App() {
   }
 
   const courses_seen=courses_study.filter((course)=>
-    course.title.toLowerCase().includes(search.toLowerCase())
+    course.name.toLowerCase().includes(search.toLowerCase())
   );
+
+        // link home.html and login.html
 
   if(!app_state.loggedin && screen!=="login"){
     return(
+      <Login />
 
     )
+
+    return(<Home />)
 
   }
 
@@ -289,7 +296,7 @@ function Coursecard({course,progress,onOpen}){
               <div className="card-meta">
                   <span>{course.chapters.length} chapters</span>
                   <span>{progress}% complete</span>
-                  <span>{course.challenges.length} challenges</span>
+                  <span>{course.challenge.length} challenge</span>
               </div>
 
               <div className="progress-track">
