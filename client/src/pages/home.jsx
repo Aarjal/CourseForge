@@ -27,8 +27,8 @@ return(
     <header className="top">
         {/* <!-- logo///nav --> */}
         <button className="wordmark" onClick={() => setScreen('home')} type="button">
-            <span className="brand-mark">CF</span>
-            COURSEFORGE
+            <img className="site-logo" src="/logo.png" alt="CourseForge logo" />
+            <span className="site-name">CourseForge</span>
         </button>
 
         <nav>
