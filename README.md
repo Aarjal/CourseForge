@@ -71,6 +71,7 @@ And ideally later on..
   
 ## Some Glimpses
 <img src="client/public/Screenshot 2026-09-21 003533.jpg" alt="Home page SS" height="220" width="520"/>
+<img src="login.jpg" alt="Home page SS" height="220" width="520"/>
 
 ---
 <p>
