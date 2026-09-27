@@ -112,6 +112,7 @@ function Admin({courses_study,
                 Add course info ad build the chapter list. 
             </p>
 
+{/* add the form to handle and update data */}
             <form className="admin-form" onSubmit={save_course}>
                 <label>
                     Course Name<input
@@ -208,9 +209,35 @@ function Admin({courses_study,
                 </button>
             </form>
 
-
+            {message
+             && 
+             <p className="form-message">{message}</p>
+            }
+            
+            {draft_chap.length>0 && (
+                <div className="chapter-list">
+                    {draft_chap.map((chapter,index)=>(
+                        <div className="chapter-row" key={chapter.id}>
+                            <span className="chapter-num">
+                                {String(index++).padStart(2,'0')}
+                            </span>
+                            <div className="chapter-info">
+                                <strong>{chapter.title}</strong>
+                                <span>{chapter.duration}</span>
+                            </div>
+                            <span className="tag">
+                                {chapter.preview ? 'Preview':'Locked'}
+                            </span>
+                        </div>
+                    ))}
+                </div>
+            )}
 
 
         </section>
     )
 }
+
+
+
+export default Admin
