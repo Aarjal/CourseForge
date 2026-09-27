@@ -45,6 +45,9 @@ return(
             <button onClick={handle_logout_event} type="button">
                 Logout
             </button>
+            <button className={screen==='admin' ? 'active' :''}
+            onClick={()=> setScreen('admin')}
+            type="button">Admin</button>
         </nav>
 
 

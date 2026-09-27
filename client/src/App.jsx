@@ -6,6 +6,7 @@ import Login from './pages/login'
 import Home from './pages/home'
 import Browse from './pages/browse'
 import CourseDetails from './pages/courseDetails'
+import Admin from './pages/admin'
 
 // add array of courses with chapters and challenges
 
@@ -173,6 +174,9 @@ function get_saved_status(){
 
 //main app function 
 function App() {
+
+  // add admin courses data
+  const[admin_courses, setAdminCourses]=useState(courses_study)
   const[app_state, setAppState]=useState(get_saved_status());
   const [screen, setScreen]=useState(() =>
     get_saved_status().loggedin ? "home" : "login",
@@ -317,6 +321,14 @@ function App() {
             chap_comp={chap_comp}
             setScreen={setScreen}
               />
+          )
+        }
+        {
+          screen==='admin' && (
+            <Admin
+            courses_study={admin_courses}
+            setCoursesStudy={setAdminCourses}
+            setScreen={setScreen}/>
           )
         }
 
