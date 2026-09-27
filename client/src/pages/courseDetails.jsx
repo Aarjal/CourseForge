@@ -7,7 +7,6 @@ function CourseDetails({
     enroll_course,
     chap_comp,
     setScreen,
-    setScreen,
 }){
     // ret course isnt found iif there is no such courses
     if(!course){

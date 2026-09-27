@@ -5,6 +5,7 @@ import './App.css'
 import Login from './pages/login'
 import Home from './pages/home'
 import Browse from './pages/browse'
+import CourseDetails from './pages/courseDetails'
 
 // add array of courses with chapters and challenges
 
@@ -270,7 +271,7 @@ function App() {
 
     )}
 
-    // changed:: added both handler 1/home 2/ browse tab. under main sec. 
+    // changed:: add what to show for what screen and pass respective values to function. 
 
     return(
       <main className="app-shell">
@@ -306,6 +307,21 @@ function App() {
           setSelecCourseId={setSelecCourseId}
           setScreen={setScreen}/>
         )}
+        {
+          screen==='course' && (
+            <CourseDetails
+            course={selected_course}
+            app_state={app_state}
+            chap_progress={chap_progress}
+            enroll_course={enroll_course}
+            chap_comp={chap_comp}
+            setScreen={setScreen}
+              />
+          )
+        }
+
+
+
       </main>)
 
   }
