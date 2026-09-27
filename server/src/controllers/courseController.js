@@ -23,5 +23,14 @@ const getCourseById = async (req, res) => {
     }
 };
 
+const createCourse = async (req, res) => {
+    try {
+        const course = await Course.create(req.body);
+        res.status(201).json(course);
+    }catch (error) {
+        res.status(400).json({ message: "Failed to create course", error: error.message});
+    }
+};
 
-module.exports = { getCourses, getCourseById };
+
+module.exports = { getCourses, getCourseById, createCourse };
