@@ -638,3 +638,58 @@ legend {
 }
 
 
+
+/* admin page css */
+.admin-page{
+  width: min(760px,100%);
+  margin: 0 auto;
+}
+
+.admin-form{
+  display: grid;
+  gap:18px;
+  margin:28px 0
+}
+
+.admin-form label{
+  display: grid;
+  gap: 8px;
+  color: var(--ink);
+  font-size: 13px;
+  font-weight: 700;
+}
+.admin-form input,
+.admin-form textarea, .admin-form select{
+  width: 100%;
+  padding: 13px;
+  border: 1px solid var(--line);
+  background: var(--paper);
+  color: var(--ink);
+}
+.admin-form textarea{
+  min-height: 130px;
+  resize: vertical;
+}
+.checkbox-row{
+  display: flex !important;
+  grid-template-columns: auto 1fr;
+  align-items: center;
+  gap: 9px !important;
+}
+
+.checkbox-row input{
+  width: auto;
+}
+.admin-page hr{
+  margin: 45px 0;
+  border: 0;
+  border-top: 1px solid var(--line);
+}
+
+.form-message{
+  padding: 13px;
+  background: var(--green-soft);
+  color: var(--green);
+  font-size: 14px;
+  font-weight: 700;
+}

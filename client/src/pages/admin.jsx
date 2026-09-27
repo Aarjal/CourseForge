@@ -53,7 +53,7 @@ function Admin({courses_study,
         }
         setDraftChapters([
             ...draft_chap,{
-                id:draft_chap.length++,
+                id:draft_chap.length+1,
                 title: chapter_form.title,
                 duration: chapter_form.duration,
                 preview: chapter_form.preview,
