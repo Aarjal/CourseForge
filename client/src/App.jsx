@@ -169,6 +169,20 @@ function get_saved_status(){
   };
 }
 
+function get_saved_courses(){
+  const saved = localStorage.getItem("courseforge-courses");
+
+  if (!saved) {
+    return courses_study;
+  }
+
+  try {
+    return JSON.parse(saved);
+  } catch {
+    return courses_study;
+  }
+}
+
 
   
 
@@ -176,7 +190,7 @@ function get_saved_status(){
 function App() {
 
   // add  courses data
-  const[admin_courses, setAdminCourses]=useState(courses_study)
+    const[admin_courses, setAdminCourses]=useState(get_saved_courses)
   const[app_state, setAppState]=useState(get_saved_status());
   const [screen, setScreen]=useState(() =>
     get_saved_status().loggedin ? "home" : "login",
@@ -190,6 +204,11 @@ function App() {
   const selected_course=admin_courses.find(
     (course)=> course.id===selec_course_id,
   )
+
+  function update_admin_courses(next_courses){
+  	setAdminCourses(next_courses);
+  	localStorage.setItem("courseforge-courses", JSON.stringify(next_courses));
+  }
 
 
   function saveState(next_state){
@@ -327,7 +346,7 @@ function App() {
           screen==='admin' && (
             <Admin
             courses_study={admin_courses}
-            setCoursesStudy={setAdminCourses}
+            setCoursesStudy={update_admin_courses}
             setScreen={setScreen}/>
           )
         }

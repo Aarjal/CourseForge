@@ -64,9 +64,8 @@ const done_enroll = app_state.en_courses.includes(course.id)
 {/* show chap list using the ccquired data and above vars.  */}
             <div className="chapter-list">
                 {course.chapters.map((chapter,index)=>{
-                    const completed=
-                    app_state.completed_chap[course.id]?.includes(chapter.id) ?? false
-
+                    const completed =
+                        app_state.completed_chap[course.id]?.includes(chapter.id) ?? false
                     const locked= !chapter.preview && !done_enroll
 
                     return(

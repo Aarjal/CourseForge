@@ -11,7 +11,8 @@ function Browse({
     setScreen,
 }){
     // search course using filter and lowercasing the input
-    const visible_courses=courses_study.filter((course)=>
+     const visible_courses=courses_study.filter((course)=>
+    course.published !== false &&
     course.name.toLowerCase().includes(search.toLowerCase()),
     )
 

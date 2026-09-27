@@ -24,9 +24,11 @@ function Admin({courses_study,
 
     // update course
     function upd_course(event){
+        const { name, value } = event.target
+
         setCourseForm({
             ...course_form,
-            [event.target.name]: event.target.value,
+            [name]: value,
         })
     }
 
