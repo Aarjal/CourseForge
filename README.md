@@ -65,6 +65,7 @@ And ideally later on..
 - JWT - Authentication (planning)
 - Vercel and Render - Deployment (planning) { for now - github pages}
 
+Note: Backend is fully functional but not yet deployed — currently runs locally ( thats soon to happen )
 ---
 <p>
 <p>
