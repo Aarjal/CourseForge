@@ -12,7 +12,7 @@
   
 ## Current Status
 
-We're still in building phase as this is the first week of development. The groundwork for the application is there but there's yet to add lots and lots of functionality. However, a simple general workflow is still possible with the current version. The UI/UX isn't there yet indeed but for now we're just happy with how it works.
+We're still in building phase as this is the second week of development. The groundwork for the application is there but there's yet to add lots and lots of functionality. First week was all frontend and static things but now we've added the backend part and polished frontend even better. User authentication, however is still remaining(student and admins aren't separated). Simple general workflow to test is still possible with the current version. The UI/UX isn't there yet indeed but for now we're just happy with how it works.
 The login page is just a demo version for now--  
 You may use demo email and password :)
 
@@ -59,7 +59,8 @@ And ideally later on..
 ## Tech Stack
 
 - React with Vite - Frontend
-- Node JS with Express - Backend (planning)
+- Node JS with Express - Backend 
+- MongoDB with Mongoose - Database
 - Cloudinary - File storage (planning)
 - JWT - Authentication (planning)
 - Vercel and Render - Deployment (planning) { for now - github pages}
@@ -86,7 +87,9 @@ And ideally later on..
 
 
 ### Prerequisites
-- None for now 
+- Node js
+- Mongodb connection
+- npm
 
 ### Installation
 
@@ -98,6 +101,10 @@ cd courseforge
 # To install frontend dependencies
 cd ../client
 npm install
+
+#To install backend dependencies
+cd server
+npm install
 ```
 
 ### Running locally
@@ -107,6 +114,14 @@ npm install
 # To start frontend 
 cd client
 npm start
+
+Before running the backend, create a 'server/.env' file with:
+PORT=<your port>
+MONGO_URI=<your mongodb connection string>
+
+#To start backend
+cd server
+node src/server.js
 ```
 
 ---
