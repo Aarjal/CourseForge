@@ -20,7 +20,9 @@ function CourseDetails({
         </div>)
     }
 // find enrolled courses
-    const done_enroll=app_state.en_courses.incldes(course.id)
+const done_enroll = app_state.en_courses.includes(course.id)
+
+
 // ret the found corses
     return(
         <section className="course-details-page">
@@ -63,14 +65,14 @@ function CourseDetails({
             <div className="chapter-list">
                 {course.chapters.map((chapter,index)=>{
                     const completed=
-                    app_state.completed_chap[course.id].incldes(chapter.id) ?? false
+                    app_state.completed_chap[course.id]?.includes(chapter.id) ?? false
 
                     const locked= !chapter.preview && !done_enroll
 
                     return(
                         <div className="chapter-row" key={chapter.id}>
                             <div className="chapter-num">
-                                {String(index++).padStart(2,'0')}
+                                {String(index+1).padStart(2,'0')}
                             </div>
 
                             <div className="chapter-info">

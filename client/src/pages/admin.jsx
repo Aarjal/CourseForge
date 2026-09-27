@@ -53,7 +53,7 @@ function Admin({courses_study,
         }
         setDraftChapters([
             ...draft_chap,{
-                id:draft_chap.length++,
+                id:draft_chap.length+1,
                 title: chapter_form.title,
                 duration: chapter_form.duration,
                 preview: chapter_form.preview,
@@ -72,7 +72,7 @@ function Admin({courses_study,
 
 // save coursedata
     function save_course(event){
-        event.preventDefailt()
+        event.preventDefault()
          
         if(!course_form.name||!course_form.desc){
             setMessage('Add a course name and description.')
@@ -109,7 +109,7 @@ function Admin({courses_study,
             <p className="eye">Admin tools</p>
             <h1>Create a course</h1>
             <p className="muted">
-                Add course info ad build the chapter list. 
+                Add course info and build the chapter list. 
             </p>
 
 {/* add the form to handle and update data */}
@@ -127,7 +127,7 @@ function Admin({courses_study,
                     <textarea
                     name="desc"
                     value={course_form.desc}
-                    onVolumeChange={upd_course}
+                    onChange={upd_course}
                     placeholder="Descrie what will learner and students learn???"/>
 
                 </label>
@@ -219,7 +219,7 @@ function Admin({courses_study,
                     {draft_chap.map((chapter,index)=>(
                         <div className="chapter-row" key={chapter.id}>
                             <span className="chapter-num">
-                                {String(index++).padStart(2,'0')}
+                                {String(index+1).padStart(2,'0')}
                             </span>
                             <div className="chapter-info">
                                 <strong>{chapter.title}</strong>
