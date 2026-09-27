@@ -101,7 +101,116 @@ function Admin({courses_study,
 
     return(
         <section className="admin-page">
-            
+            <button className="back-button"
+            onClick={()=>setScreen('home')}               
+            type="button">
+                Back to Dashboard
+            </button>
+            <p className="eye">Admin tools</p>
+            <h1>Create a course</h1>
+            <p className="muted">
+                Add course info ad build the chapter list. 
+            </p>
+
+            <form className="admin-form" onSubmit={save_course}>
+                <label>
+                    Course Name<input
+                    name="name"
+                    value={course_form.name}
+                    onChange={upd_course}
+                    placeholder="eg: html basics"/>
+
+                </label>
+                <label>
+                    Description
+                    <textarea
+                    name="desc"
+                    value={course_form.desc}
+                    onVolumeChange={upd_course}
+                    placeholder="Descrie what will learner and students learn???"/>
+
+                </label>
+
+                <label>
+                    Category
+                    <input
+                    name="category"
+                    value={course_form.category}
+                    onChange={upd_course}/>
+
+
+                </label>
+
+                <label>
+                    Level
+                    <select
+                    name="level"
+                    value={course_form.level}
+                    onChange={upd_course}>
+                        <option>Beginner</option>
+                        <option>Intermediate</option>
+                        <option>Advanced</option>
+                        
+                    </select>
+                </label>
+
+                <label className="checkbox-row">
+                    <input 
+                    name="published"
+                    type="checkbox"
+                    checked={published}
+                    onChange={(event)=> setPublished(event.target.checked)}/>
+                    Publish this course
+                </label>
+
+                <button className="primary-button" type="submit">
+                    Save course
+                </button>
+
+            </form>
+
+            <hr/>
+
+
+            <h2>Add chapters</h2>
+
+            <form className="admin-form" onSubmit={add_chap}>
+                <label>
+                    Chapter title
+                    <input 
+                    name="title"
+                    value={chapter_form.title}
+                    onChange={upd_chap}
+                    placeholder="eg:html tags"/>
+
+                </label>
+
+                <label>
+                    Duration
+                    <input name="duration" value={chapter_form.duration}
+                    onChange={upd_chap}
+                    placeholder="20 mins"
+                    />
+                </label>
+
+                <label className="checkbox-row">
+                    <input
+                    name="preview"
+                    type="checkbox"
+                    checked={chapter_form.preview}
+                    onChange={upd_chap}/>
+                    Public preview
+
+                </label>
+
+                <button className="secondary-button" type="submit">
+                    Add chapter
+                </button>
+            </form>
+
+
+
+
         </section>
     )
 }
