@@ -175,7 +175,7 @@ function get_saved_status(){
 //main app function 
 function App() {
 
-  // add admin courses data
+  // add  courses data
   const[admin_courses, setAdminCourses]=useState(courses_study)
   const[app_state, setAppState]=useState(get_saved_status());
   const [screen, setScreen]=useState(() =>
@@ -187,9 +187,9 @@ function App() {
   const[ans, setAns]=useState({});
   const[quiz_res, setQuizRes]=useState(null);
 
-  const selected_course=courses_study.find(
+  const selected_course=admin_courses.find(
     (course)=> course.id===selec_course_id,
-  );
+  )
 
 
   function saveState(next_state){
@@ -279,7 +279,7 @@ function App() {
 
     return(
       <main className="app-shell">
-        {screen === 'home' && (
+        {(screen === 'home' || screen==='quiz') && (
 
           
           <Home
@@ -287,7 +287,7 @@ function App() {
           screen={screen}
           setScreen={setScreen}
           handle_logout_event={handle_logout_event}
-          courses_study={courses_study}
+          courses_study={admin_courses}
           chap_progress={chap_progress}
           setSelecCourseId={setSelecCourseId}
           selected_course={selected_course}
@@ -304,7 +304,7 @@ function App() {
         }
         {screen === 'browse' && (
           <Browse 
-          courses_study={courses_study}
+          courses_study={admin_courses}
           search={search}
           setSearch={setSearch}
           chap_progress={chap_progress}
