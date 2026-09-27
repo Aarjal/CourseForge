@@ -1,9 +1,10 @@
 import { useState } from 'react'
 import './App.css'
 
+
 import Login from './pages/login'
 import Home from './pages/home'
-
+import Browse from './pages/browse'
 
 // add array of courses with chapters and challenges
 
@@ -269,25 +270,43 @@ function App() {
 
     )}
 
-    return(<Home
-      app_state={app_state}
-      screen={screen}
-      setScreen={setScreen}
-      handle_logout_event={handle_logout_event}
-      courses_study={courses_study}
-      chap_progress={chap_progress}
-      setSelecCourseId={setSelecCourseId}
-      selected_course={selected_course}
-      enroll_course={enroll_course}
-      chap_comp={chap_comp}
-      submit_quiz={submit_quiz}
-      quizques={quizques}
-      ans={ans}
-      setAns={setAns}
-      quiz_res={quiz_res}
-      search={search}
-      setSearch={setSearch}
-      />)
+    // changed:: added both handler 1/home 2/ browse tab. under main sec. 
+
+    return(
+      <main className="app-shell">
+        {screen === 'home' && (
+
+          
+          <Home
+          app_state={app_state}
+          screen={screen}
+          setScreen={setScreen}
+          handle_logout_event={handle_logout_event}
+          courses_study={courses_study}
+          chap_progress={chap_progress}
+          setSelecCourseId={setSelecCourseId}
+          selected_course={selected_course}
+          enroll_course={enroll_course}
+          chap_comp={chap_comp}
+          submit_quiz={submit_quiz}
+          quizques={quizques}
+          ans={ans}
+          setAns={setAns}
+          quiz_res={quiz_res}
+          search={search}
+          setSearch={setSearch}
+          />)
+        }
+        {screen === 'browse' && (
+          <Browse 
+          courses_study={courses_study}
+          search={search}
+          setSearch={setSearch}
+          chap_progress={chap_progress}
+          setSelecCourseId={setSelecCourseId}
+          setScreen={setScreen}/>
+        )}
+      </main>)
 
   }
 
