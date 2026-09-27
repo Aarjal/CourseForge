@@ -1,4 +1,4 @@
-
+import Coursecard from "../components/courseCard"
 function Home({app_state,
   screen,
   setScreen,

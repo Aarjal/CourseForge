@@ -40,9 +40,8 @@ function Browse({
                 setSearch(event.target.value)
             }
             placeholder="Search Courses"
-            aria-label="Search Courses">
+            aria-label="Search Courses"/>
 
-            </input>
             {visible_courses.length===0 ? (
                 <div className="empty-state">
                     <h3>No courses found</h3>
