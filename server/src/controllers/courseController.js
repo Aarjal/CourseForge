@@ -63,4 +63,20 @@ const deleteCourse = async (req, res) => {
     }
 };
 
-module.exports = { getCourses, getCourseById, createCourse, updateCourse, deleteCourse };
+const togglePublish = async (req, res) => {
+    try {
+        const course = await Course.findById(req.params.id);
+
+        if(!course) {
+            return res.status(404).json({ message: "Course not found"});
+        }
+
+        course.published = !course.published;
+        await course.save();
+
+        res.status(200).json(course);
+    }   catch (error) {
+        res.status(500).json({ message: "Failed to update publish status", error:error.message});
+    }
+}
+module.exports = { getCourses, getCourseById, createCourse, updateCourse, deleteCourse, togglePublish };
