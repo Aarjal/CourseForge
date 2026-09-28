@@ -1,6 +1,7 @@
 require("dotenv").config();
 
 const express = require("express");
+const cors = require("cors");
 const connectDB = require("./config/db");
 const courseRoutes = require("./routes/courseRoutes");
 const chapterRoutes = require("./routes/chapterRoutes");
@@ -14,6 +15,12 @@ const PORT = process.env.PORT || 5000;
 
 
 app.use(express.json());
+app.use(cors({
+    origin: [
+        "http://localhost:5173",
+        "https://aarjal.github.io",
+    ],
+}));
 app.use("/api/courses", courseRoutes);
 app.use("/api/courses/:course_id/chapters", chapterRoutes);
 app.use("/api/chapters", chapterFlatRoutes);
