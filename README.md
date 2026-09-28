@@ -16,6 +16,8 @@ We're still in building phase as this is the second week of development. The gro
 The login page is just a demo version for now--  
 You may use demo email and password :)
 
+Currently it has a working frontend demo. Students can login browse and search courses,open course details,enroll in courses,complete chapters and track progress. The app currently uses local storage for demo data. The express and mongodb backend has been started, but the frontend is not connected with backend yet. Auth, file uploads and full admin permissions are planned for later development. 
+
 ---
 <p>
 <p>
@@ -39,17 +41,28 @@ And ideally later on..
 ## App Features
 
 **Student side**
+- login wth demo credentials 
 -  Browse through the available courses  
+-  search for courses
+-  view course details and chapters 
 -  Enroll via payment flow  
 -  Access their unlocked contents  
 -  Take quizzes on topics of their choice  
 -  Track their progress  
 
 **Admin side**
--  Create/edit/delete courses
--  Upload study materials
--  Manage enrollements
--  Build quizzes
+-  Create demo courses 
+-  add chapters to a course 
+-  save data in local storage
+-  choose wether chapter is public preview or not
+
+**Planned features**
+- real authentication
+- mongodb persistence
+- file uploads
+- payment enrollment
+- quiz management
+
 
 ---
 <p>
@@ -64,6 +77,7 @@ And ideally later on..
 - Cloudinary - File storage (planning)
 - JWT - Authentication (planning)
 - Vercel and Render - Deployment (planning) { for now - github pages}
+- mongodb with mongoose - planned for database  
 
 Note: Backend is fully functional but not yet deployed — currently runs locally ( thats soon to happen )
 ---
@@ -91,6 +105,8 @@ Note: Backend is fully functional but not yet deployed — currently runs locall
 - Node js
 - Mongodb connection
 - npm
+- node.js 18 or newer
+- npm
 
 ### Installation
 
@@ -108,6 +124,11 @@ cd server
 npm install
 ```
 
+```bash
+git clone https://github.com/Aarjal/CourseForge.git
+cd CourseForge/client
+npm install
+
 ### Running locally
 
 ```bash
@@ -115,15 +136,13 @@ npm install
 # To start frontend 
 cd client
 npm start
-
-Before running the backend, create a 'server/.env' file with:
-PORT=<your port>
-MONGO_URI=<your mongodb connection string>
-
-#To start backend
-cd server
-node src/server.js
 ```
+
+
+
+## live demo:
+[open this link to see demo](https://aarjal.github.io/CourseForge/)
+current demo uses local storage , so course data is saved only in browser being used for now. 
 
 ---
 <p>
