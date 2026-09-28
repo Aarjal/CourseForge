@@ -19,6 +19,7 @@ function Admin({courses_study,
     })
 
     const [draft_chap,setDraftChapters]= useState([])
+    const [chapter_target, setChapterTarget] = useState('new')
     const [published, setPublished]=useState(false)
     const [message, setMessage]= useState('')
 
@@ -46,32 +47,69 @@ function Admin({courses_study,
     }
 
     // add chapter
-    function add_chap(event){
-        event.preventDefault()
+    function add_chap(event) {
+  event.preventDefault()
 
-        if(!chapter_form.title || !chapter_form.duration){
-            setMessage('Add a chapter title and duration. ')
-            return
-        }
-        setDraftChapters([
-            ...draft_chap,{
-                id:draft_chap.length+1,
-                title: chapter_form.title,
-                duration: chapter_form.duration,
-                preview: chapter_form.preview,
-                type: 'Theory',
-            }
-        ])
+  if (!chapter_form.title || !chapter_form.duration) {
+    setMessage('Add a chapter title and duration.')
+    return
+  }
 
-        setChapterForm({
-            title:'',
-            duration:'',
-            preview:true
-        })
+  const new_chapter = {
+    title: chapter_form.title,
+    duration: chapter_form.duration,
+    preview: chapter_form.preview,
+    type: 'Theory',
+  }
 
-        setMessage('')
-    }
+  if (chapter_target !== 'new') {
+    const target_id = Number(chapter_target)
 
+    const updated_courses = courses_study.map((course) => {
+      if (course.id !== target_id) {
+        return course
+      }
+
+      const existing_chapters = course.chapters || []
+
+      const next_id =
+        existing_chapters.reduce(
+          (highest_id, chapter) => Math.max(highest_id, Number(chapter.id)),
+          0,
+        ) + 1
+
+      return {
+        ...course,
+        chapters: [
+          ...existing_chapters,
+          {
+            ...new_chapter,
+            id: next_id,
+          },
+        ],
+      }
+    })
+
+    setCoursesStudy(updated_courses)
+    setMessage('Chapter added to the selected course.')
+  } else {
+    setDraftChapters([
+      ...draft_chap,
+      {
+        ...new_chapter,
+        id: draft_chap.length + 1,
+      },
+    ])
+
+    setMessage('Chapter added to the new course draft.')
+  }
+
+  setChapterForm({
+    title: '',
+    duration: '',
+    preview: true,
+  })
+}
 // save coursedata
     function save_course(event){
         event.preventDefault()
@@ -98,6 +136,7 @@ function Admin({courses_study,
             desc:''
         })
         setDraftChapters([])
+        setChapterTarget('new')
         setPublished(false)
     }
 
@@ -178,6 +217,21 @@ function Admin({courses_study,
             <h2>Add chapters</h2>
 
             <form className="admin-form" onSubmit={add_chap}>
+                <label>
+                    Insert Chapter into
+                    <select value={chapter_target} 
+                    onChange={(event)=> setChapterTarget(event.target.value)}>
+                        <option value="new">New course draft</option>
+                        {courses_study.map((course)=>(
+                            <option key={course.id} value={course.id}>
+                                {course.name}
+                            </option>
+                        ))}
+                    </select>
+                </label>
+               
+               
+               
                 <label>
                     Chapter title
                     <input 

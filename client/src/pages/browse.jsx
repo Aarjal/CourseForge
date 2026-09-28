@@ -23,6 +23,8 @@ function Browse({
 
     return(
         <section className="browse-page">
+            <button className="back-button"
+            onClick={()=>setScreen('home')} type="button">Back to Dashboard</button>
             <div className="section-head">
                 <div>
                     <p className="eye">

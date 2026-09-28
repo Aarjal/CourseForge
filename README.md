@@ -55,6 +55,7 @@ And ideally later on..
 -  add chapters to a course 
 -  save data in local storage
 -  choose wether chapter is public preview or not
+-  add chapters to existing course or create a new course to add chapter(option given)
 
 **Planned features**
 - real authentication
@@ -104,8 +105,6 @@ Note: Backend is fully functional but not yet deployed — currently runs locall
 ### Prerequisites
 - Node js
 - Mongodb connection
-- npm
-- node.js 18 or newer
 - npm
 
 ### Installation
