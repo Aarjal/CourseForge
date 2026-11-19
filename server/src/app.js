@@ -1,8 +1,10 @@
 const express = require("express");
 const cors = require("cors");
+const cookieParser = require("cookie-parser");
 const courseRoutes = require("./routes/courseRoutes");
 const chapterRoutes = require("./routes/chapterRoutes");
 const chapterFlatRoutes = require("./routes/chapterFlatRoutes");
+const authRoutes = require("./routes/authRoutes");
 const errorHandler = require("./middleware/errorHandler");
 
 const app = express();
@@ -18,6 +20,7 @@ const allowedOrigins = process.env.CLIENT_ORIGIN
   : defaultOrigins;
 
 app.use(express.json());
+app.use(cookieParser());
 app.use(
   cors({
     origin: (origin, callback) => {
@@ -40,11 +43,13 @@ app.get("/api/v1/health", (req, res) => {
 });
 
 // v1 API Routes
+app.use("/api/v1/auth", authRoutes);
 app.use("/api/v1/courses", courseRoutes);
 app.use("/api/v1/courses/:course_id/chapters", chapterRoutes);
 app.use("/api/v1/chapters", chapterFlatRoutes);
 
 // Backward-compatible alias for existing endpoints
+app.use("/api/auth", authRoutes);
 app.use("/api/courses", courseRoutes);
 app.use("/api/courses/:course_id/chapters", chapterRoutes);
 app.use("/api/chapters", chapterFlatRoutes);

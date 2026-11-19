@@ -35,13 +35,16 @@
   - Deleted dead `client/src/api/courses.js` (superseded by adapter layer).
   - Server test suite: Jest + Supertest + MongoMemoryServer (10 tests passing).
   - Dependencies: `zod`, `jest`, `supertest`, `mongodb-memory-server`.
-- [ ] **Phase 4: Authentication & Roles**
-  - User model (student, instructor/admin).
-  - JWT access tokens + refresh tokens (httpOnly cookies + Bearer header for mobile).
-  - Password hashing with bcrypt.
-  - Auth & role-based middleware.
-  - Seed script for initial admin user.
-  - Client auth UI & state wired to live backend.
+- [x] **Phase 4: Authentication & Roles**
+  - User model with bcrypt password hashing (student, instructor, admin).
+  - JWT access tokens (15m) + refresh tokens (7d) via cookies and Bearer headers.
+  - Auth middleware `protect` (JWT validation) and `authorize` (role-based access control).
+  - Auth routes: register, login, refresh, logout, me.
+  - Required `createdBy` on courses, auto-populated from authenticated `req.user`.
+  - Mutation endpoints on courses & chapters secured with role checks (instructor/admin).
+  - Seed admin script (`npm run seed:admin`).
+  - Auth integration tests (23 total server tests passing across 3 test suites).
+  - Dependencies: `bcryptjs`, `jsonwebtoken`, `cookie-parser`.
 - [ ] **Phase 5: Connect Client to API**
   - Switch to HTTP adapter in development (`VITE_USE_MOCK=false`).
   - Token refresh handling, loading/empty/error states.
@@ -86,14 +89,15 @@
 ---
 
 ## Last Completed Step
-- **Phase 3 completed**: Backend API hardened with Zod validation, centralized error handling, pagination/search/filtering, chapter CRUD with auto-ordering, and 10 server tests passing. Dead client code removed.
+- **Phase 4 completed**: User authentication, JWT tokens (access + refresh), bcrypt password hashing, auth/role middleware, course `createdBy` enforcement, seed admin script, and comprehensive test suite (23 tests passing).
 
 ## What's Next
-- **Phase 4: Authentication & Roles** — User model (bcrypt passwords, student/instructor/admin roles), JWT access + refresh tokens, auth & role middleware, seed admin script, client auth wired to backend.
+- **Phase 5: Connect Client to API** — Integrate frontend HTTP adapter with real backend endpoints, implement automatic token refresh interceptor, loading/error states in UI, while keeping mock adapter active for GitHub Pages.
 
 ## How to Run & Test Current State
 - **Client Dev**: `cd client && npm run dev` &rarr; `http://localhost:5173/CourseForge/`
-- **Client Tests**: `cd client && npm test`
+- **Client Tests**: `cd client && npm test` (12 tests)
 - **Client Build**: `cd client && npm run build`
-- **Server Tests**: `cd server && npm test` (10 tests)
+- **Server Tests**: `cd server && npm test` (23 tests)
+- **Server Admin Seed**: `cd server && npm run seed:admin`
 - **Server**: `cd server && npm run dev`

@@ -1,6 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const validate = require("../middleware/validate");
+const { protect, authorize } = require("../middleware/auth");
 const {
   createCourseSchema,
   updateCourseSchema,
@@ -14,11 +15,31 @@ const {
   togglePublish,
 } = require("../controllers/courseController");
 
+// Public routes
 router.get("/", getCourses);
 router.get("/:id", getCourseById);
-router.post("/", validate(createCourseSchema), createCourse);
-router.put("/:id", validate(updateCourseSchema), updateCourse);
-router.delete("/:id", deleteCourse);
-router.patch("/:id/publish", togglePublish);
+
+// Protected routes — require instructor or admin role
+router.post(
+  "/",
+  protect,
+  authorize("instructor", "admin"),
+  validate(createCourseSchema),
+  createCourse
+);
+router.put(
+  "/:id",
+  protect,
+  authorize("instructor", "admin"),
+  validate(updateCourseSchema),
+  updateCourse
+);
+router.delete("/:id", protect, authorize("instructor", "admin"), deleteCourse);
+router.patch(
+  "/:id/publish",
+  protect,
+  authorize("instructor", "admin"),
+  togglePublish
+);
 
 module.exports = router;

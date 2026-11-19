@@ -65,3 +65,12 @@ This log documents every architectural, technical, and product design decision m
 ### [2026-11-19] Decision 14: Mongoose `returnDocument: 'after'` over `new: true`
 - **Context**: Mongoose 9 deprecated the `new: true` option for `findOneAndUpdate()`.
 - **Decision**: Use `{ returnDocument: 'after' }` throughout all controllers. Same behavior, no deprecation warnings.
+
+
+### [2026-11-19] Decision 15: Dual Token Strategy (Access & Refresh JWTs)
+- **Context**: Need secure authentication suitable for web browsers (defense against XSS/CSRF) and future mobile clients (Capacitor/React Native).
+- **Decision**: Issue a short-lived access token (15m) and long-lived refresh token (7d). The refresh token is provided both in an httpOnly, sameSite=strict cookie (for web browsers) and in the response body (for mobile/API clients). The access token is transmitted via the `Authorization: Bearer <token>` header or `accessToken` cookie.
+
+### [2026-11-19] Decision 16: Role-Based Access Control and Course Creator Attribution
+- **Context**: Content creation, chapter modifications, and course deletion must not be accessible to students or unauthenticated users.
+- **Decision**: Added `authorize("instructor", "admin")` middleware guarding course and chapter creation, updating, and deletion. In addition, courses strictly require a `createdBy` ObjectId referencing the authenticated User who created the course.

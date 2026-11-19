@@ -39,8 +39,7 @@ const courseSchema = new mongoose.Schema(
     createdBy: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
-      // TODO(phase 4): restore required: true when User auth is active
-      required: false,
+      required: [true, "Course must have a creator"],
     },
   },
   {

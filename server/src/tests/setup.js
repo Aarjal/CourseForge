@@ -29,3 +29,26 @@ afterAll(async () => {
     await mongoServer.stop();
   }
 });
+
+/**
+ * Helper: create a user and return user doc + access token.
+ * Useful for tests that need authenticated requests.
+ */
+async function createTestUser(overrides = {}) {
+  const User = require("../models/user");
+  const { generateAccessToken } = require("../utils/jwt");
+
+  const userData = {
+    name: overrides.name || "Test User",
+    email: overrides.email || `test-${Date.now()}@example.com`,
+    password: overrides.password || "password123",
+    role: overrides.role || "instructor",
+    ...overrides,
+  };
+
+  const user = await User.create(userData);
+  const token = generateAccessToken(user);
+  return { user, token };
+}
+
+module.exports = { createTestUser };

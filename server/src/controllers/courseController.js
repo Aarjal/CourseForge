@@ -78,7 +78,10 @@ const getCourseById = async (req, res, next) => {
 
 const createCourse = async (req, res, next) => {
   try {
-    const course = await Course.create(req.body);
+    const course = await Course.create({
+      ...req.body,
+      createdBy: req.user._id,
+    });
     res.status(201).json(course);
   } catch (error) {
     next(error);
