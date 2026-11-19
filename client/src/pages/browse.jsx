@@ -1,68 +1,68 @@
+import { useState } from "react";
+import { Link } from "react-router-dom";
+import Navbar from "../components/Navbar";
 import Coursecard from "../components/courseCard";
+import { useCourses } from "../hooks/useCourses";
 
+function Browse() {
+  const { courses, calculateProgress } = useCourses();
+  const [search, setSearch] = useState("");
 
-// create the func to create the browse page in the website
-function Browse({
-    courses_study,
-    search,
-    setSearch,
-    chap_progress,
-    setSelecCourseId,
-    setScreen,
-}){
-    // search course using filter and lowercasing the input
-     const visible_courses=courses_study.filter((course)=>
-    course.published !== false &&
-    course.name.toLowerCase().includes(search.toLowerCase()),
-    )
+  const visibleCourses = courses.filter((course) => {
+    const title = course.title || course.name || "";
+    return (
+      course.published !== false &&
+      title.toLowerCase().includes(search.toLowerCase())
+    );
+  });
 
-    function open_course(course_id){
-        setSelecCourseId(course_id)
-        setScreen('course')
-    }
+  return (
+    <div className="app-shell">
+      <Navbar />
 
-    return(
+      <main className="main-content">
         <section className="browse-page">
-            <button className="back-button"
-            onClick={()=>setScreen('home')} type="button">Back to Dashboard</button>
-            <div className="section-head">
-                <div>
-                    <p className="eye">
-                        Course Library
-                    </p>
-                    <h1>Browse Courses</h1>
-                    <p className="muted">
-                        Find a practical course and start learning. 
-                    </p>
+          <Link className="back-button" to="/">
+            Back to Dashboard
+          </Link>
 
-                </div>
+          <div className="section-head">
+            <div>
+              <p className="eye">Course Library</p>
+              <h1>Browse Courses</h1>
+              <p className="muted">Find a practical course and start learning.</p>
             </div>
+          </div>
 
-            <input className="search-input" type="search" 
-            value={search} onChange={(event)=>
-                setSearch(event.target.value)
-            }
+          <input
+            className="search-input"
+            type="search"
+            value={search}
+            onChange={(event) => setSearch(event.target.value)}
             placeholder="Search Courses"
-            aria-label="Search Courses"/>
+            aria-label="Search Courses"
+          />
 
-            {visible_courses.length===0 ? (
-                <div className="empty-state">
-                    <h3>No courses found</h3>
-                    <p>Try searching for a different course. </p>
-                </div>
-            ):(
-                <div className="course-grid">
-                    {visible_courses.map((course)=>(
-                        <Coursecard key={course.id}
-                        course={course}
-                        progress={chap_progress(course)}
-                        onOpen={()=>open_course(course.id)}/>
-                    ))}
-                </div>
-            )}
+          {visibleCourses.length === 0 ? (
+            <div className="empty-state">
+              <h3>No courses found</h3>
+              <p>Try searching for a different course.</p>
+            </div>
+          ) : (
+            <div className="course-grid">
+              {visibleCourses.map((course) => (
+                <Coursecard
+                  key={course.id}
+                  course={course}
+                  progress={calculateProgress(course)}
+                />
+              ))}
+            </div>
+          )}
         </section>
-    )
+      </main>
+    </div>
+  );
 }
 
-
-export default Browse
+export default Browse;

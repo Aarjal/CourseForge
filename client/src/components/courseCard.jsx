@@ -1,38 +1,49 @@
-// paste the function in home.jsx to this jsx and link it...
+import { Link } from "react-router-dom";
 
-function Coursecard({course,progress,onOpen}){
-  return(
-      <article className="course-card">
-          <div className="course-cover">
-              <span>{course.category}</span>
-              <strong>{course.id}</strong> 
-          </div>
+function Coursecard({ course, progress = 0, onOpen }) {
+  const chapterCount = course.chapters?.length ?? 0;
+  const challengeCount = course.challenge?.length ?? 0;
+  const courseTitle = course.name || course.title;
+  const courseDesc = course.desc || course.description;
 
-          <div className="course-card-content">
-              <span className="tag">{course.level}</span>
-              <h3>{course.name}</h3>
-              <p>{course.desc}</p>
+  return (
+    <article className="course-card">
+      <div className="course-cover">
+        <span>{course.category}</span>
+        <strong>{course.id}</strong>
+      </div>
 
-              <div className="card-meta">
-                  <span>{course.chapters.length} chapters</span>
-                  <span>{progress}% complete</span>
-                  <span>{course.challenge.length} challenge</span>
-              </div>
+      <div className="course-card-content">
+        <span className="tag">{course.level}</span>
+        <h3>{courseTitle}</h3>
+        <p>{courseDesc}</p>
 
-              <div className="progress-track">
-                  {/* <!-- dont forget to add css for progress bar. its like battery indicator in mobile phones(the % of progres. is taken from  progress variable) --> */}
-                  <div className="progress-fill" style={{ width: `${progress}%` }}></div>
-              </div>
+        <div className="card-meta">
+          <span>{chapterCount} chapters</span>
+          <span>{progress}% complete</span>
+          <span>{challengeCount} challenge</span>
+        </div>
 
-              <button className="secondary-button full-width" onClick={onOpen} 
-              type="button">
-                View Course
-                </button>
-                  
+        <div className="progress-track">
+          <div className="progress-fill" style={{ width: `${progress}%` }}></div>
+        </div>
 
-          </div>
-      </article>
-  )
-} 
+        {onOpen ? (
+          <button className="secondary-button full-width" onClick={onOpen} type="button">
+            View Course
+          </button>
+        ) : (
+          <Link
+            className="secondary-button full-width"
+            to={`/courses/${course.id}`}
+            style={{ display: "inline-block", textAlign: "center", textDecoration: "none" }}
+          >
+            View Course
+          </Link>
+        )}
+      </div>
+    </article>
+  );
+}
 
-export default Coursecard
+export default Coursecard;

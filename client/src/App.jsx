@@ -1,363 +1,71 @@
-import { useState } from 'react'
-import './App.css'
+import { HashRouter, Routes, Route } from "react-router-dom";
+import { AuthProvider } from "./context/AuthContext";
+import { CourseProvider } from "./context/CourseContext";
+import ProtectedRoute from "./components/ProtectedRoute";
 
+import Login from "./pages/login";
+import Home from "./pages/home";
+import Browse from "./pages/browse";
+import CourseDetails from "./pages/courseDetails";
+import Quiz from "./pages/quiz";
+import Admin from "./pages/admin";
+import NotFound from "./pages/notFound";
 
-import Login from './pages/login'
-import Home from './pages/home'
-import Browse from './pages/browse'
-import CourseDetails from './pages/courseDetails'
-import Admin from './pages/admin'
+import "./App.css";
 
-// add array of courses with chapters and challenges
-
-const courses_study = [
-    { id: 1, 
-      name: "Intro to Web Dev", 
-      category: "Development", 
-      level: "Beginner", 
-      desc:"Learn basics of web development by learning basic HTML and CSS.You will also learn how websites work and how to make own website from scratch. ",
-      chapters: [
-        {id:1,
-          title:"How web works??",
-          duration: "15 mins",
-          preview:true,
-          type:"Theory",
-        },
-        {
-          id:2,
-          title:"HTML foundations",
-          duration: "20 mins",
-          preview:false,
-          type:"Theory",
-        },
-        {
-          id:3,
-          title:"CSS foundations",
-          duration: "25 mins",
-          preview:false,
-          type:"Theory",
-        },
-      ],
-      challenge:[
-        {
-          id:1,
-          title:"Build a simple website using HTML and CSS",
-          duration: "30 mins",
-          preview:false,
-          type:"Lab",
-        },
-      ],
-    },
-    { id: 2, 
-      name: "JS(javascript) essentials for beginners", 
-      category: "Programming", 
-      level: "Intermediate", 
-      desc:"Build strong foundation in Js variables, functions, arrays and events. You will also learn how to make your website interactive using JS.",
-      chapters: [
-        {id:1,
-          title:"Variables and Values",
-          duration: "15 mins",
-          preview:true,
-          type:"Theory",
-        },
-        {
-          id:2,
-          title:"Functions and Events",
-          duration: "25 mins",
-          preview:false,
-          type:"Theory",
-        },
-        {
-          id:3,
-          title:"Arrays and Loops",
-          duration: "30 mins",
-          preview:false,
-          type:"Theory",
-        },
-        {
-          id:4,
-          title: "Events and Interaction",
-          duration: "28 mins",
-          preview:false,
-          type:"Theory",
-        }
-      ],
-      challenge:[
-        {
-          id:1,
-          title:"Build a simple calc. using JS foundations. ",
-          duration: "30 mins",
-          preview:false,
-          type:"Lab",
-        },
-        {
-          id:2,
-          title:"Build a website that take input and validate it using JS (also use html and css) ",
-          duration: "40 mins",
-          preview:false,
-          type:"Lab",
-        }
-      ]
-    },
-  ];
-
-// quiz array
-  const quizques=[
-
-    {
-      question: "What does HTML stand for?",
-      options: [
-        "Hyper Text Markup Language",
-        "Home Tool Markup Language",
-        "Hyperlinks and Text Markup Language",
-        "Hyperlinking Text Marking Language"
-      ],
-      ans: 0
-    },
-    {
-      question:"What does HTML define?",
-      options:[
-        "database",
-        "Server Hardware",
-        "Webpage Structure",
-        "Webpage Design"
-      ],
-      ans:2
-    },
-    {
-      question:"What is the correct HTML element for inserting a line break?",
-      options:[
-        "<break>",
-        "<br>",
-        "<lb>",
-        "<line>"
-      ],
-      ans:1
-    },
-    {
-      question:"What does CSS control?",
-      options:[
-        "HTML Structure",
-        "HTML Content",
-        "HTML Style",
-        "HTML Functionality"
-      ],
-      ans:2
-    },
-    {
-      question:"Which technology adds interactivity to a webpage?",
-      options:[
-        "HTML",
-        "CSS",
-        "Python",
-        "JavaScript",
-      ],
-      ans:3
-    }
-  ]
-
-
-  // get status from local storage so that backend is not required fot this ship(remove in other ship)
-function get_saved_status(){
-  const saved=localStorage.getItem("course-status");
-  
-  return saved ? JSON.parse(saved) : {
-    loggedin: false,
-    en_courses:[],
-    completed_chap:{},
-    quiz_done: false,
-  };
-}
-
-function get_saved_courses(){
-  const saved = localStorage.getItem("courseforge-courses");
-
-  if (!saved) {
-    return courses_study;
-  }
-
-  try {
-    return JSON.parse(saved);
-  } catch {
-    return courses_study;
-  }
-}
-
-
-  
-
-//main app function 
 function App() {
-
-  // add  courses data
-    const[admin_courses, setAdminCourses]=useState(get_saved_courses)
-  const[app_state, setAppState]=useState(get_saved_status());
-  const [screen, setScreen]=useState(() =>
-    get_saved_status().loggedin ? "home" : "login",
+  return (
+    <HashRouter>
+      <AuthProvider>
+        <CourseProvider>
+          <Routes>
+            <Route path="/login" element={<Login />} />
+            <Route
+              path="/"
+              element={
+                <ProtectedRoute>
+                  <Home />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/courses"
+              element={
+                <ProtectedRoute>
+                  <Browse />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/courses/:courseId"
+              element={
+                <ProtectedRoute>
+                  <CourseDetails />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/quiz"
+              element={
+                <ProtectedRoute>
+                  <Quiz />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/admin"
+              element={
+                <ProtectedRoute>
+                  <Admin />
+                </ProtectedRoute>
+              }
+            />
+            <Route path="*" element={<NotFound />} />
+          </Routes>
+        </CourseProvider>
+      </AuthProvider>
+    </HashRouter>
   );
-  const[selec_course_id, setSelecCourseId]=useState(null);
-  const[search, setSearch]=useState("");
-  const[loginerr, setLoginErr]=useState("");
-  const[ans, setAns]=useState({});
-  const[quiz_res, setQuizRes]=useState(null);
+}
 
-  const selected_course=admin_courses.find(
-    (course)=> course.id===selec_course_id,
-  )
-
-  function update_admin_courses(next_courses){
-  	setAdminCourses(next_courses);
-  	localStorage.setItem("courseforge-courses", JSON.stringify(next_courses));
-  }
-
-
-  function saveState(next_state){
-    setAppState(next_state);
-    localStorage.setItem("course-status", JSON.stringify(next_state));
-  }
-
-  function handle_login_event(event){
-    event.preventDefault();
-
-    const form_data= new FormData(event.target);
-    const email=form_data.get("email");
-    const password=form_data.get("password");
-
-    if(!email || !password){
-      setLoginErr("Enter an email and password to continue");
-      return;
-    }
-
-    saveState({...app_state, loggedin:true});
-    setScreen("home");
-  }
-    function handle_logout_event(){
-      saveState({...app_state, loggedin:false});
-      setScreen("login");
-    }
-  
-  function enroll_course(course_id){
-    if(app_state.en_courses.includes(course_id)){
-      return;
-    }
-    saveState({
-      ...app_state, 
-      en_courses: [...app_state.en_courses, course_id]
-    });
-
-  }
-
-  function chap_comp(course_id, chap_id){
-    const progress=app_state.completed_chap[course_id] || [];
-
-    if(progress.includes(chap_id)){
-      return;
-    }
-
-    saveState({
-      ...app_state,
-      completed_chap:{...app_state.completed_chap,
-        [course_id]: [...progress, chap_id],
-      }
-    })
-  }
-
-  function chap_progress(course){
-    const finished=
-    app_state.completed_chap[course.id]?.length || 0;
-
-    return Math.round((finished/course.chapters.length)*100);
-  }
-
-  function submit_quiz(event){
-    event.preventDefault();
-    let sc=0;
-    quizques.forEach((q,index)=>{
-      if(Number(ans[index])===q.ans){
-        sc++;
-      }
-    })
-    setQuizRes(sc);
-
-    if(sc=== quizques.length){
-      saveState({...app_state, quiz_done:true});
-    }
-  }
-
-        // link home.html and login.html
-
-  if(!app_state.loggedin){
-    return(
-      <Login
-      handle_login_event={handle_login_event}
-      loginerr={loginerr} />
-
-    )}
-
-    // changed:: add what to show for what screen and pass respective values to function. 
-
-    return(
-      <main className="app-shell">
-        {(screen === 'home' || screen==='quiz') && (
-
-          
-          <Home
-            app_state={app_state}
-            screen={screen}
-            setScreen={setScreen}
-            handle_logout_event={handle_logout_event}
-            courses_study={admin_courses}
-            chap_progress={chap_progress}
-            setSelecCourseId={setSelecCourseId}
-            submit_quiz={submit_quiz}
-            quizques={quizques}
-            ans={ans}
-            setAns={setAns}
-            quiz_res={quiz_res}
-          />)
-        }
-        {screen === 'browse' && (
-          <Browse 
-          courses_study={admin_courses}
-          search={search}
-          setSearch={setSearch}
-          chap_progress={chap_progress}
-          setSelecCourseId={setSelecCourseId}
-          setScreen={setScreen}/>
-        )}
-        {
-          screen==='course' && (
-            <CourseDetails
-            course={selected_course}
-            app_state={app_state}
-            chap_progress={chap_progress}
-            enroll_course={enroll_course}
-            chap_comp={chap_comp}
-            setScreen={setScreen}
-              />
-          )
-        }
-        {
-          screen==='admin' && (
-            <Admin
-            courses_study={admin_courses}
-            setCoursesStudy={update_admin_courses}
-            setScreen={setScreen}/>
-          )
-        }
-
-
-
-      </main>)
-
-  }
-
-  
-
-
-
-
-
-
-
-export default App
+export default App;

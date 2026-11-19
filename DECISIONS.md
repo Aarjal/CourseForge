@@ -40,3 +40,11 @@ This log documents every architectural, technical, and product design decision m
 ### [2026-11-19] Decision 8: Server-Enforced Security Model
 - **Context**: In an e-learning platform, paid/locked chapter content must never rely solely on UI-level hiding (`isLocked ? null : <Content />`).
 - **Decision**: Course details return chapter metadata (title, order, preview flag) for everyone, but full chapter content (videos, documents, lecture notes) will be served by a protected endpoint that checks enrollment verification on the server.
+
+### [2026-11-19] Decision 9: Testing Frameworks (Vitest + Testing Library)
+- **Context**: Need fast, ESM-native unit and component testing that integrates seamlessly with Vite.
+- **Decision**: Installed `vitest`, `jsdom`, and `@testing-library/react` in `client/` for component and unit testing.
+
+### [2026-11-19] Decision 10: React Context & Hook File Separation
+- **Context**: Oxlint enforces `react(only-export-components)` for Vite React Fast Refresh compliance.
+- **Decision**: Separated context definitions (`authContextDef.js`, `courseContextDef.js`), providers (`AuthContext.jsx`, `CourseContext.jsx`), and consumer hooks (`hooks/useAuth.js`, `hooks/useCourses.js`) to guarantee clean Fast Refresh without lint warnings.

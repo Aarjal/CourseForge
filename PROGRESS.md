@@ -7,19 +7,21 @@
   - Server dev scripts, nodemon, and dynamic CORS origin via `CLIENT_ORIGIN`.
   - Client start script and dead route cleanup in `home.jsx`.
   - Accurate README installation, environment, and feature documentation.
-- [ ] **Phase 1: Router & App.jsx Decomposition** *(IN PROGRESS)*
-  - Install `react-router-dom` (HashRouter for GitHub Pages compatibility).
-  - Contexts & Hooks (`AuthContext`, `CourseContext`).
-  - Isolated localStorage state module.
-  - Route structure (`/login`, `/`, `/courses`, `/courses/:courseId`, `/quiz`, `/admin`, `*`).
-  - `ProtectedRoute` wrapper for student and admin areas.
-  - Wire quiz entry button on Course Details page (enrolled students only).
-  - Guard `courseCard.jsx` with `course.challenge?.length ?? 0`.
-- [ ] **Phase 2: Client Data-Access Layer**
-  - Adapter interface for courses, chapters, progress, and auth.
-  - Mock implementation using `courseforge-courses-v2` in localStorage (migrating old data).
-  - HTTP implementation ready for live API (`VITE_USE_MOCK` toggle).
+- [x] **Phase 1: Router & App.jsx Decomposition**
+  - Added `react-router-dom` with `HashRouter`.
+  - Routes: `/login`, `/`, `/courses`, `/courses/:courseId`, `/quiz`, `/admin`, `*` (404).
+  - Built `ProtectedRoute` for student/admin routes.
+  - Created `AuthContext` + `useAuth()` and `CourseContext` + `useCourses()`.
+  - Centralized all `localStorage` calls into `services/storage.js`.
+  - Connected quiz entry button on Course Details page for enrolled users.
+  - Guarded `courseCard.jsx` with `course.challenge?.length ?? 0`.
+  - Added unit and component test suite using Vitest + Testing Library (7 tests passing).
+- [ ] **Phase 2: Client Data-Access Layer** *(IN PROGRESS)*
+  - Create adapter interface for courses, chapters, progress, and auth.
+  - Implement `mockAdapter` using versioned key `courseforge-courses-v2` with migration from legacy format.
+  - Implement `httpAdapter` wired to API endpoints (with `/api/v1` compatibility).
   - Standardize all objects on `title` and `description`, duration as `Number` (minutes).
+  - Dynamic switching via `VITE_USE_MOCK`.
 - [ ] **Phase 3: Backend Completion & API Hardening**
   - Complete chapter endpoints (GET chapters for course, auto `order`, reordering).
   - Centralized error-handling middleware & CastError handling.
@@ -77,12 +79,13 @@
 ---
 
 ## Last Completed Step
-- **Phase 0 completed**: Git hygiene, server nodemon/CORS configuration, client dead code cleanup, README updates, verification tests passed.
+- **Phase 1 completed**: Router & App.jsx decomposition with HashRouter, contexts, hooks, tests, and zero lint warnings.
 
 ## What's Next
-- **Phase 1 implementation**: Decompose `App.jsx`, install `react-router-dom`, establish `AuthContext` and `CourseContext`, introduce `ProtectedRoute`, wire routes, and run verification.
+- **Phase 2 implementation**: Client data-access layer (abstract adapter, mock adapter with `courseforge-courses-v2` migration, HTTP adapter, standardized `title`/`description`/duration as minutes).
 
 ## How to Run & Test Current State
-- **Client**: `cd client && npm run dev` &rarr; `http://localhost:5173/CourseForge/`
-- **Server**: `cd server && npm run dev` &rarr; `http://localhost:5000`
-- **Health check**: `curl.exe -i http://localhost:5000/api/health`
+- **Client Dev**: `cd client && npm run dev` &rarr; `http://localhost:5173/CourseForge/`
+- **Client Tests**: `cd client && npm test`
+- **Client Build**: `cd client && npm run build`
+- **Server**: `cd server && npm run dev`

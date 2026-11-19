@@ -5,4 +5,8 @@ import { defineConfig } from 'vite'
 export default defineConfig({
   base: '/CourseForge/',
   plugins: [react()],
+  test: {
+    environment: 'jsdom',
+    globals: true,
+  },
 })
