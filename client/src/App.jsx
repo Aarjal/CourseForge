@@ -302,23 +302,18 @@ function App() {
 
           
           <Home
-          app_state={app_state}
-          screen={screen}
-          setScreen={setScreen}
-          handle_logout_event={handle_logout_event}
-          courses_study={admin_courses}
-          chap_progress={chap_progress}
-          setSelecCourseId={setSelecCourseId}
-          selected_course={selected_course}
-          enroll_course={enroll_course}
-          chap_comp={chap_comp}
-          submit_quiz={submit_quiz}
-          quizques={quizques}
-          ans={ans}
-          setAns={setAns}
-          quiz_res={quiz_res}
-          search={search}
-          setSearch={setSearch}
+            app_state={app_state}
+            screen={screen}
+            setScreen={setScreen}
+            handle_logout_event={handle_logout_event}
+            courses_study={admin_courses}
+            chap_progress={chap_progress}
+            setSelecCourseId={setSelecCourseId}
+            submit_quiz={submit_quiz}
+            quizques={quizques}
+            ans={ans}
+            setAns={setAns}
+            quiz_res={quiz_res}
           />)
         }
         {screen === 'browse' && (

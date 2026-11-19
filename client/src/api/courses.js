@@ -30,7 +30,7 @@ export async function create_course(course_data) {
     const response= await fetch(`${api_url}/api/courses`,{
         method:'post',
         headers:{
-            'content-type': 'applocation/json',
+            'content-type': 'application/json',
         },
         body: JSON.stringify(course_data),
         
