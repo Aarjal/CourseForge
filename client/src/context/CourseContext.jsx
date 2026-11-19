@@ -12,11 +12,14 @@ export function CourseProvider({ children }) {
   const [quizDone, setQuizDone] = useState(false);
   const [quizQuestions, setQuizQuestions] = useState(DEFAULT_QUIZ_QUESTIONS);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
     let isCancelled = false;
 
     async function loadData() {
+      setLoading(true);
+      setError(null);
       try {
         const [fetchedCourses, fetchedEnrollments, fetchedProgress, fetchedQuestions] =
           await Promise.all([
@@ -34,9 +37,10 @@ export function CourseProvider({ children }) {
           setQuizQuestions(fetchedQuestions || DEFAULT_QUIZ_QUESTIONS);
           setLoading(false);
         }
-      } catch (error) {
+      } catch (err) {
         if (!isCancelled) {
-          console.error("Failed to fetch course data:", error);
+          console.error("Failed to fetch course data:", err);
+          setError(err.message || "Failed to load courses");
           setLoading(false);
         }
       }
@@ -50,27 +54,24 @@ export function CourseProvider({ children }) {
   }, [isLoggedIn]);
 
   async function enrollCourse(courseId) {
-    const numericId = Number(courseId);
-    if (enrolledCourseIds.includes(numericId)) {
+    if (enrolledCourseIds.some((id) => String(id) === String(courseId))) {
       return;
     }
-    await api.enroll(numericId);
-    setEnrolledCourseIds((prev) => [...prev, numericId]);
+    await api.enroll(courseId);
+    setEnrolledCourseIds((prev) => [...prev, courseId]);
   }
 
   async function completeChapter(courseId, chapterId) {
-    const numericCourseId = Number(courseId);
-    const numericChapId = Number(chapterId);
-    const currentCompleted = completedChapters[numericCourseId] || [];
+    const currentCompleted = completedChapters[courseId] || [];
 
-    if (currentCompleted.includes(numericChapId)) {
+    if (currentCompleted.some((id) => String(id) === String(chapterId))) {
       return;
     }
 
-    await api.completeChapter(numericCourseId, numericChapId);
+    await api.completeChapter(courseId, chapterId);
     setCompletedChapters((prev) => ({
       ...prev,
-      [numericCourseId]: [...currentCompleted, numericChapId],
+      [courseId]: [...currentCompleted, chapterId],
     }));
   }
 
@@ -78,7 +79,7 @@ export function CourseProvider({ children }) {
     if (!course || !course.chapters || course.chapters.length === 0) {
       return 0;
     }
-    const completedCount = completedChapters[course.id]?.length || 0;
+    const completedCount = (completedChapters[course.id] || []).length;
     return Math.round((completedCount / course.chapters.length) * 100);
   }
 
@@ -92,8 +93,28 @@ export function CourseProvider({ children }) {
 
   async function addCourse(courseData) {
     const created = await api.createCourse(courseData);
-    setCourses((prev) => [...prev, created]);
-    return created;
+    let finalCourse = created;
+
+    // If draft chapters were staged on the course, insert them if not already attached
+    if (
+      courseData.chapters &&
+      courseData.chapters.length > 0 &&
+      (!created.chapters || created.chapters.length === 0)
+    ) {
+      const addedChapters = [];
+      for (const ch of courseData.chapters) {
+        try {
+          const addedCh = await api.addChapter(created.id, ch);
+          addedChapters.push(addedCh);
+        } catch (chErr) {
+          console.warn("Could not attach draft chapter:", chErr.message);
+        }
+      }
+      finalCourse = { ...created, chapters: addedChapters };
+    }
+
+    setCourses((prev) => [...prev, finalCourse]);
+    return finalCourse;
   }
 
   async function addChapter(targetId, chapterData) {
@@ -118,6 +139,7 @@ export function CourseProvider({ children }) {
     quizDone,
     quizQuestions,
     loading,
+    error,
     enrollCourse,
     completeChapter,
     calculateProgress,

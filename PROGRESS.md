@@ -45,10 +45,14 @@
   - Seed admin script (`npm run seed:admin`).
   - Auth integration tests (23 total server tests passing across 3 test suites).
   - Dependencies: `bcryptjs`, `jsonwebtoken`, `cookie-parser`.
-- [ ] **Phase 5: Connect Client to API**
-  - Switch to HTTP adapter in development (`VITE_USE_MOCK=false`).
-  - Token refresh handling, loading/empty/error states.
-  - Maintain mock fallback for GitHub Pages demo.
+- [x] **Phase 5: Connect Client to API**
+  - Robust `httpAdapter` with paginated courses unwrapping and normalization.
+  - Automatic token refresh interceptor on 401 status with concurrency queue.
+  - Added user registration and role toggle in `login.jsx` and `AuthContext`.
+  - Safely normalized course & chapter ID comparisons (`String(id)`) across `CourseContext` and `CourseDetails`.
+  - Added loading, empty, and error feedback states in `Browse`, `CourseDetails`, and `Login`.
+  - Maintained complete mock fallback for GitHub Pages deployment.
+  - Expanded client test suite with 4 new tests for `httpAdapter` (16 client tests passing).
 - [ ] **Phase 6: Real Enrollment & Progress Engine**
   - Enrollment & Progress models.
   - Server-enforced locked content rules (non-previews restricted to enrolled users).
@@ -89,14 +93,14 @@
 ---
 
 ## Last Completed Step
-- **Phase 4 completed**: User authentication, JWT tokens (access + refresh), bcrypt password hashing, auth/role middleware, course `createdBy` enforcement, seed admin script, and comprehensive test suite (23 tests passing).
+- **Phase 5 completed**: Full HTTP client adapter integration, automatic JWT refresh interceptor, registration form toggle, loading & error UI feedback, safe ID comparisons, and 16 passing client tests.
 
 ## What's Next
-- **Phase 5: Connect Client to API** — Integrate frontend HTTP adapter with real backend endpoints, implement automatic token refresh interceptor, loading/error states in UI, while keeping mock adapter active for GitHub Pages.
+- **Phase 6: Real Enrollment & Progress Engine** — Mongoose Enrollment & Progress models, enrollment endpoints (`POST /api/v1/enrollments/:courseId`), chapter completion tracking (`POST /api/v1/progress/:courseId/chapters/:chapterId`), and server-enforced content access rules for locked chapters.
 
 ## How to Run & Test Current State
 - **Client Dev**: `cd client && npm run dev` &rarr; `http://localhost:5173/CourseForge/`
-- **Client Tests**: `cd client && npm test` (12 tests)
+- **Client Tests**: `cd client && npm test` (16 tests)
 - **Client Build**: `cd client && npm run build`
 - **Server Tests**: `cd server && npm test` (23 tests)
 - **Server Admin Seed**: `cd server && npm run seed:admin`

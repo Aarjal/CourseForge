@@ -5,7 +5,7 @@ import Coursecard from "../components/courseCard";
 import { useCourses } from "../hooks/useCourses";
 
 function Browse() {
-  const { courses, calculateProgress } = useCourses();
+  const { courses, calculateProgress, loading, error } = useCourses();
   const [search, setSearch] = useState("");
 
   const visibleCourses = courses.filter((course) => {
@@ -43,7 +43,13 @@ function Browse() {
             aria-label="Search Courses"
           />
 
-          {visibleCourses.length === 0 ? (
+          {error && <p className="error">{error}</p>}
+
+          {loading ? (
+            <div className="empty-state">
+              <p>Loading courses...</p>
+            </div>
+          ) : visibleCourses.length === 0 ? (
             <div className="empty-state">
               <h3>No courses found</h3>
               <p>Try searching for a different course.</p>

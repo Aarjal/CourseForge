@@ -74,3 +74,8 @@ This log documents every architectural, technical, and product design decision m
 ### [2026-11-19] Decision 16: Role-Based Access Control and Course Creator Attribution
 - **Context**: Content creation, chapter modifications, and course deletion must not be accessible to students or unauthenticated users.
 - **Decision**: Added `authorize("instructor", "admin")` middleware guarding course and chapter creation, updating, and deletion. In addition, courses strictly require a `createdBy` ObjectId referencing the authenticated User who created the course.
+
+
+### [2026-11-19] Decision 17: Transparent Token Refresh Queue & Universal ID Comparison
+- **Context**: Access tokens expire quickly (15m). If multiple concurrent requests trigger 401s, naive implementations send multiple `/auth/refresh` requests simultaneously, which can cause token race conditions and invalidations. Furthermore, client code previously used `Number(courseId)` for ID comparisons which produced `NaN` on MongoDB ObjectIds.
+- **Decision**: Implemented an async refresh queue in `httpAdapter.js` that coordinates a single active token refresh while pending requests wait for the fresh access token. Also transitioned all client state checks and progress logic from `Number(id)` to string comparisons (`String(id)`), ensuring compatibility with both numeric mock IDs and MongoDB hex ObjectIds.

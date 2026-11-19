@@ -27,6 +27,20 @@ export function AuthProvider({ children }) {
     initAuth();
   }, []);
 
+  async function register(name, email, password, role = "student") {
+    if (!email || !password) {
+      throw new Error("Enter an email and password to register");
+    }
+
+    const result = await api.register({ name, email, password, role });
+    setAuthStatus((prev) => ({
+      ...prev,
+      loggedin: true,
+      user: result.user,
+    }));
+    return result;
+  }
+
   async function login(email, password) {
     if (!email || !password) {
       throw new Error("Enter an email and password to continue");
@@ -56,6 +70,7 @@ export function AuthProvider({ children }) {
     authStatus,
     setAuthStatus,
     loading,
+    register,
     login,
     logout,
   };

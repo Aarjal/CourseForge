@@ -288,6 +288,17 @@ export const mockAdapter = {
   },
 
   // Auth methods
+  async register({ name, email, password, role = "student" }) {
+    if (!email || !password) {
+      throw new Error("Email and password are required");
+    }
+    const userRole = email.includes("admin") ? "admin" : role;
+    const user = { id: Date.now(), name: name || "Student", email, role: userRole };
+    const status = getStoredStatus();
+    saveStoredStatus({ ...status, loggedin: true, user });
+    return { user, token: "mock-jwt-token" };
+  },
+
   async login({ email, password }) {
     if (!email || !password) {
       throw new Error("Email and password are required");

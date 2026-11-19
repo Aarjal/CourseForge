@@ -11,9 +11,23 @@ function CourseDetails() {
     calculateProgress,
     enrollCourse,
     completeChapter,
+    loading,
   } = useCourses();
 
   const course = courses.find((c) => String(c.id) === String(courseId));
+
+  if (loading && !course) {
+    return (
+      <div className="app-shell">
+        <Navbar />
+        <main className="main-content">
+          <div className="empty-state">
+            <p>Loading course details...</p>
+          </div>
+        </main>
+      </div>
+    );
+  }
 
   if (!course) {
     return (
@@ -31,7 +45,7 @@ function CourseDetails() {
     );
   }
 
-  const isEnrolled = enrolledCourseIds.includes(Number(course.id));
+  const isEnrolled = enrolledCourseIds.some((id) => String(id) === String(course.id));
   const progressPercent = calculateProgress(course);
   const courseTitle = course.title || course.name;
   const courseDesc = course.description || course.desc;
@@ -85,13 +99,15 @@ function CourseDetails() {
 
           <div className="chapter-list">
             {chapters.map((chapter, index) => {
-              const isCompleted =
-                completedChapters[course.id]?.includes(chapter.id) ?? false;
+              const currentCompleted = completedChapters[course.id] || [];
+              const isCompleted = currentCompleted.some(
+                (id) => String(id) === String(chapter.id)
+              );
               const isLocked = !chapter.preview && !isEnrolled;
               const durationLabel =
                 typeof chapter.duration === "number"
                   ? `${chapter.duration} mins`
-                  : chapter.duration;
+                : chapter.duration;
 
               return (
                 <div className="chapter-row" key={chapter.id}>
