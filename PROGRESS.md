@@ -23,12 +23,18 @@
   - Added dynamic adapter switching via `VITE_USE_MOCK` (defaults to `true`).
   - Wired `AuthContext` and `CourseContext` to the unified data adapter.
   - Added 5 unit tests for mock adapter and migration logic (12 client tests passing total).
-- [ ] **Phase 3: Backend Completion & API Hardening** *(IN PROGRESS)*
-  - Complete chapter endpoints (GET chapters for course, auto `order`, reordering).
-  - Centralized error-handling middleware & CastError handling.
-  - Route prefix `/api/v1`.
-  - Course search, filtering, and pagination.
-  - Server tests (Jest/Vitest + Supertest + MongoMemoryServer).
+- [x] **Phase 3: Backend Completion & API Hardening**
+  - Extracted `app.js` from `server.js` for testability.
+  - Complete chapter endpoints (GET all by course, GET by ID, create, update, delete, reorder).
+  - Auto-assign chapter `order` server-side.
+  - Centralized error-handling middleware (CastError, Mongoose ValidationError, Zod 4 issues, duplicate key, CORS).
+  - Input validation with Zod schemas on all create/update routes.
+  - Route prefix `/api/v1` with backward-compatible `/api` alias.
+  - Course search, filtering (category, level, published), sorting, and pagination.
+  - Replaced deprecated `{ new: true }` with `{ returnDocument: 'after' }`.
+  - Deleted dead `client/src/api/courses.js` (superseded by adapter layer).
+  - Server test suite: Jest + Supertest + MongoMemoryServer (10 tests passing).
+  - Dependencies: `zod`, `jest`, `supertest`, `mongodb-memory-server`.
 - [ ] **Phase 4: Authentication & Roles**
   - User model (student, instructor/admin).
   - JWT access tokens + refresh tokens (httpOnly cookies + Bearer header for mobile).
@@ -80,13 +86,14 @@
 ---
 
 ## Last Completed Step
-- **Phase 2 completed**: Abstract client data-access layer (`mockAdapter`, `httpAdapter`, `VITE_USE_MOCK`), schema standardization (`title`/`description`, `duration: Number`), auto-migration to `courseforge-courses-v2`, test suite expanded to 12 passing tests.
+- **Phase 3 completed**: Backend API hardened with Zod validation, centralized error handling, pagination/search/filtering, chapter CRUD with auto-ordering, and 10 server tests passing. Dead client code removed.
 
 ## What's Next
-- **Phase 3 implementation**: Backend completion with `/api/v1` prefix, chapter retrieval routes, auto-assignment of chapter orders, centralized error handling & CastError middleware, course pagination/search/filtering, and server test suite (Supertest + MongoMemoryServer).
+- **Phase 4: Authentication & Roles** — User model (bcrypt passwords, student/instructor/admin roles), JWT access + refresh tokens, auth & role middleware, seed admin script, client auth wired to backend.
 
 ## How to Run & Test Current State
 - **Client Dev**: `cd client && npm run dev` &rarr; `http://localhost:5173/CourseForge/`
 - **Client Tests**: `cd client && npm test`
 - **Client Build**: `cd client && npm run build`
+- **Server Tests**: `cd server && npm test` (10 tests)
 - **Server**: `cd server && npm run dev`

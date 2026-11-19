@@ -48,3 +48,20 @@ This log documents every architectural, technical, and product design decision m
 ### [2026-11-19] Decision 10: React Context & Hook File Separation
 - **Context**: Oxlint enforces `react(only-export-components)` for Vite React Fast Refresh compliance.
 - **Decision**: Separated context definitions (`authContextDef.js`, `courseContextDef.js`), providers (`AuthContext.jsx`, `CourseContext.jsx`), and consumer hooks (`hooks/useAuth.js`, `hooks/useCourses.js`) to guarantee clean Fast Refresh without lint warnings.
+
+
+### [2026-11-19] Decision 11: Server Testing Stack (Jest + Supertest + MongoMemoryServer)
+- **Context**: Need integration tests for API endpoints without hitting the real MongoDB Atlas database.
+- **Decision**: Use `jest` as the test runner, `supertest` for HTTP assertions against the Express app, and `mongodb-memory-server` for an in-memory MongoDB instance. Tests run with `--experimental-vm-modules` flag to work around Mongoose 9's dynamic `import('os')` in Jest's CommonJS environment.
+
+### [2026-11-19] Decision 12: Zod for Server Input Validation
+- **Context**: Need runtime schema validation on request bodies before they hit Mongoose.
+- **Decision**: Use Zod (v4) for all route-level input validation via a `validate()` middleware. Zod provides TypeScript-friendly schema definitions, composable validators, and clear error messages. Note: Zod 4 uses `err.issues` (not `err.errors`) for error details.
+
+### [2026-11-19] Decision 13: Express App / Server Separation
+- **Context**: Testing the Express app with Supertest requires importing the app without starting the HTTP listener.
+- **Decision**: Extract `app.js` (Express config, middleware, routes) from `server.js` (which only connects to DB and calls `app.listen`). Tests import `app.js` directly.
+
+### [2026-11-19] Decision 14: Mongoose `returnDocument: 'after'` over `new: true`
+- **Context**: Mongoose 9 deprecated the `new: true` option for `findOneAndUpdate()`.
+- **Decision**: Use `{ returnDocument: 'after' }` throughout all controllers. Same behavior, no deprecation warnings.
