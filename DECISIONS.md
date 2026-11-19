@@ -79,3 +79,8 @@ This log documents every architectural, technical, and product design decision m
 ### [2026-11-19] Decision 17: Transparent Token Refresh Queue & Universal ID Comparison
 - **Context**: Access tokens expire quickly (15m). If multiple concurrent requests trigger 401s, naive implementations send multiple `/auth/refresh` requests simultaneously, which can cause token race conditions and invalidations. Furthermore, client code previously used `Number(courseId)` for ID comparisons which produced `NaN` on MongoDB ObjectIds.
 - **Decision**: Implemented an async refresh queue in `httpAdapter.js` that coordinates a single active token refresh while pending requests wait for the fresh access token. Also transitioned all client state checks and progress logic from `Number(id)` to string comparisons (`String(id)`), ensuring compatibility with both numeric mock IDs and MongoDB hex ObjectIds.
+
+
+### [2026-11-20] Decision 18: Server-Enforced Content Gating via `optionalProtect`
+- **Context**: Preview chapters must remain accessible to unauthenticated guests for marketing and exploration. Non-preview chapters must be strictly locked to enrolled students (or instructors/admins) on the server, not just hidden by the UI.
+- **Decision**: Implemented `optionalProtect` middleware on chapter access endpoints. It non-blockingly parses JWT credentials if provided. If a chapter has `preview: true`, it is served immediately. If `preview: false`, the server verifies the user's active enrollment record in MongoDB; non-enrolled students receive 403 Forbidden, and unauthenticated guests receive 401 Unauthorized.

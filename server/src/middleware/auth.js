@@ -84,4 +84,31 @@ function authorize(...roles) {
   };
 }
 
-module.exports = { protect, authorize };
+/**
+ * Optional authentication: attaches req.user if a valid token is provided,
+ * but allows unauthenticated requests to continue with req.user = null.
+ */
+async function optionalProtect(req, res, next) {
+  try {
+    let token;
+    const authHeader = req.headers.authorization;
+    if (authHeader && authHeader.startsWith("Bearer ")) {
+      token = authHeader.split(" ")[1];
+    } else if (req.cookies && req.cookies.accessToken) {
+      token = req.cookies.accessToken;
+    }
+
+    if (token) {
+      const decoded = verifyToken(token);
+      const user = await User.findById(decoded.id);
+      if (user) {
+        req.user = user;
+      }
+    }
+  } catch {
+    // Non-blocking: continue as guest if token is missing/expired/invalid
+  }
+  next();
+}
+
+module.exports = { protect, authorize, optionalProtect };

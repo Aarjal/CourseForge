@@ -1,0 +1,47 @@
+const mongoose = require("mongoose");
+
+const progressSchema = new mongoose.Schema(
+  {
+    user: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+      required: [true, "User reference is required"],
+      index: true,
+    },
+    course: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Course",
+      required: [true, "Course reference is required"],
+      index: true,
+    },
+    completedChapters: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Chapter",
+      },
+    ],
+    lastAccessedChapter: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Chapter",
+    },
+    lastAccessedAt: {
+      type: Date,
+      default: Date.now,
+    },
+    completed: {
+      type: Boolean,
+      default: false,
+    },
+    completedAt: {
+      type: Date,
+    },
+  },
+  {
+    timestamps: true,
+  }
+);
+
+// Unique progress document per user and course
+progressSchema.index({ user: 1, course: 1 }, { unique: true });
+
+module.exports = mongoose.model("Progress", progressSchema);

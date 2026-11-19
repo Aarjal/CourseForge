@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const validate = require("../middleware/validate");
-const { protect, authorize } = require("../middleware/auth");
+const { protect, authorize, optionalProtect } = require("../middleware/auth");
 const { updateChapterSchema } = require("../validations/chapterValidation");
 const {
   getChapterById,
@@ -9,8 +9,8 @@ const {
   deleteChapter,
 } = require("../controllers/chapterController");
 
-// Public
-router.get("/:id", getChapterById);
+// Public endpoint, but optionalProtect allows checking enrollment for non-preview chapters
+router.get("/:id", optionalProtect, getChapterById);
 
 // Protected — instructor/admin only
 router.put(

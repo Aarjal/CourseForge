@@ -5,6 +5,8 @@ const courseRoutes = require("./routes/courseRoutes");
 const chapterRoutes = require("./routes/chapterRoutes");
 const chapterFlatRoutes = require("./routes/chapterFlatRoutes");
 const authRoutes = require("./routes/authRoutes");
+const enrollmentRoutes = require("./routes/enrollmentRoutes");
+const progressRoutes = require("./routes/progressRoutes");
 const errorHandler = require("./middleware/errorHandler");
 
 const app = express();
@@ -44,12 +46,16 @@ app.get("/api/v1/health", (req, res) => {
 
 // v1 API Routes
 app.use("/api/v1/auth", authRoutes);
+app.use("/api/v1/enrollments", enrollmentRoutes);
+app.use("/api/v1/progress", progressRoutes);
 app.use("/api/v1/courses", courseRoutes);
 app.use("/api/v1/courses/:course_id/chapters", chapterRoutes);
 app.use("/api/v1/chapters", chapterFlatRoutes);
 
 // Backward-compatible alias for existing endpoints
 app.use("/api/auth", authRoutes);
+app.use("/api/enrollments", enrollmentRoutes);
+app.use("/api/progress", progressRoutes);
 app.use("/api/courses", courseRoutes);
 app.use("/api/courses/:course_id/chapters", chapterRoutes);
 app.use("/api/chapters", chapterFlatRoutes);

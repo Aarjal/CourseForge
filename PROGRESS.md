@@ -53,10 +53,14 @@
   - Added loading, empty, and error feedback states in `Browse`, `CourseDetails`, and `Login`.
   - Maintained complete mock fallback for GitHub Pages deployment.
   - Expanded client test suite with 4 new tests for `httpAdapter` (16 client tests passing).
-- [ ] **Phase 6: Real Enrollment & Progress Engine**
-  - Enrollment & Progress models.
-  - Server-enforced locked content rules (non-previews restricted to enrolled users).
-  - Progress calculation, completion tracking, resume point.
+- [x] **Phase 6: Real Enrollment & Progress Engine**
+  - Mongoose `Enrollment` model with compound unique index `{ user: 1, course: 1 }`.
+  - Mongoose `Progress` model tracking completed chapters, resume point, and completion percentage.
+  - Enrollment routes (`POST /api/v1/enrollments/:courseId`, `GET /api/v1/enrollments`, `GET /:courseId`).
+  - Progress routes (`GET /api/v1/progress`, `GET /:courseId`, `POST /:courseId/chapters/:chapterId`, `PUT /:courseId/last-accessed/:chapterId`).
+  - Server-enforced content locking: `getChapterById` checks enrollment (returns 403 on locked chapters for non-enrolled users; bypasses check for instructors/admins).
+  - `optionalProtect` middleware allowing public previews without auth while verifying tokens on locked chapters.
+  - Added 13 new integration tests in `enrollmentProgress.test.js` (36 total server tests passing).
 - [ ] **Phase 7: Admin & Instructor Panel**
   - Course authoring, editing, publish toggle.
   - Chapter management and reordering.
@@ -93,15 +97,15 @@
 ---
 
 ## Last Completed Step
-- **Phase 5 completed**: Full HTTP client adapter integration, automatic JWT refresh interceptor, registration form toggle, loading & error UI feedback, safe ID comparisons, and 16 passing client tests.
+- **Phase 6 completed**: Enrollment & Progress models, enrollment endpoints, chapter completion tracking, server-enforced locked content rules with optional auth, and 36 server tests passing.
 
 ## What's Next
-- **Phase 6: Real Enrollment & Progress Engine** — Mongoose Enrollment & Progress models, enrollment endpoints (`POST /api/v1/enrollments/:courseId`), chapter completion tracking (`POST /api/v1/progress/:courseId/chapters/:chapterId`), and server-enforced content access rules for locked chapters.
+- **Phase 7: Admin & Instructor Panel** — Course edit / unpublish flows, chapter reordering UI (drag/drop or order buttons), instructor dashboard analytics (enrolled students count, completion rates), and user management.
 
 ## How to Run & Test Current State
 - **Client Dev**: `cd client && npm run dev` &rarr; `http://localhost:5173/CourseForge/`
 - **Client Tests**: `cd client && npm test` (16 tests)
 - **Client Build**: `cd client && npm run build`
-- **Server Tests**: `cd server && npm test` (23 tests)
+- **Server Tests**: `cd server && npm test` (36 tests)
 - **Server Admin Seed**: `cd server && npm run seed:admin`
 - **Server**: `cd server && npm run dev`

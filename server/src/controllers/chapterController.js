@@ -1,5 +1,6 @@
 const Chapter = require("../models/chapter");
 const Course = require("../models/course");
+const Enrollment = require("../models/enrollment");
 
 const getChaptersByCourse = async (req, res, next) => {
   try {
@@ -18,6 +19,39 @@ const getChapterById = async (req, res, next) => {
     if (!chapter) {
       return res.status(404).json({ message: "Chapter not found" });
     }
+
+    // Public preview chapters are accessible to everyone
+    if (chapter.preview) {
+      return res.status(200).json(chapter);
+    }
+
+    // Locked chapter requires an authenticated user
+    if (!req.user) {
+      return res.status(401).json({
+        error: "Unauthorized",
+        message: "Please log in to view locked chapter content",
+      });
+    }
+
+    // Instructors and admins have access to all chapters
+    if (req.user.role === "admin" || req.user.role === "instructor") {
+      return res.status(200).json(chapter);
+    }
+
+    // Check enrollment for students
+    const enrollment = await Enrollment.findOne({
+      user: req.user._id,
+      course: chapter.course,
+      status: "active",
+    });
+
+    if (!enrollment) {
+      return res.status(403).json({
+        error: "Forbidden",
+        message: "This chapter is locked. Please enroll in the course to access full content.",
+      });
+    }
+
     res.status(200).json(chapter);
   } catch (error) {
     next(error);
