@@ -12,14 +12,14 @@ function Login() {
     return <Navigate to="/" replace />;
   }
 
-  function handleSubmit(event) {
+  async function handleSubmit(event) {
     event.preventDefault();
     const formData = new FormData(event.target);
     const email = formData.get("email");
     const password = formData.get("password");
 
     try {
-      login(email, password);
+      await login(email, password);
       const destination = location.state?.from?.pathname || "/";
       navigate(destination, { replace: true });
     } catch (err) {

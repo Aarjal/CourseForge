@@ -44,7 +44,7 @@ function Admin() {
     }));
   }
 
-  function handleAddChapter(event) {
+  async function handleAddChapter(event) {
     event.preventDefault();
 
     if (!chapterForm.title || !chapterForm.duration) {
@@ -54,13 +54,13 @@ function Admin() {
 
     const newChapter = {
       title: chapterForm.title,
-      duration: chapterForm.duration,
+      duration: parseInt(chapterForm.duration, 10) || 15,
       preview: chapterForm.preview,
       type: "Theory",
     };
 
     if (chapterTarget !== "new") {
-      addChapter(chapterTarget, newChapter);
+      await addChapter(chapterTarget, newChapter);
       setMessage("Chapter added to the selected course.");
     } else {
       setDraftChapters((prev) => [
@@ -80,7 +80,7 @@ function Admin() {
     });
   }
 
-  function handleSaveCourse(event) {
+  async function handleSaveCourse(event) {
     event.preventDefault();
 
     const title = courseForm.title;
@@ -91,7 +91,7 @@ function Admin() {
       return;
     }
 
-    addCourse({
+    await addCourse({
       name: title,
       title: title,
       desc: description,

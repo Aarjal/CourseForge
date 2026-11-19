@@ -1,40 +1,53 @@
 import { useState, useEffect } from "react";
 import { AuthContext } from "./authContextDef";
-import { getStoredStatus, saveStoredStatus } from "../services/storage";
+import { api } from "../api";
+import { getStoredStatus } from "../services/storage";
 
 export function AuthProvider({ children }) {
   const [authStatus, setAuthStatus] = useState(() => getStoredStatus());
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    saveStoredStatus(authStatus);
-  }, [authStatus]);
+    async function initAuth() {
+      try {
+        const currentUser = await api.getCurrentUser();
+        if (currentUser) {
+          setAuthStatus((prev) => ({
+            ...prev,
+            loggedin: true,
+            user: currentUser,
+          }));
+        }
+      } catch (err) {
+        console.warn("Could not retrieve current user session:", err.message);
+      } finally {
+        setLoading(false);
+      }
+    }
+    initAuth();
+  }, []);
 
-  function login(email, password) {
+  async function login(email, password) {
     if (!email || !password) {
       throw new Error("Enter an email and password to continue");
     }
 
-    setAuthStatus((prev) => {
-      const next = {
-        ...prev,
-        loggedin: true,
-        user: { email, role: email.includes("admin") ? "admin" : "student" },
-      };
-      saveStoredStatus(next);
-      return next;
-    });
+    const result = await api.login({ email, password });
+    setAuthStatus((prev) => ({
+      ...prev,
+      loggedin: true,
+      user: result.user,
+    }));
+    return result;
   }
 
-  function logout() {
-    setAuthStatus((prev) => {
-      const next = {
-        ...prev,
-        loggedin: false,
-        user: null,
-      };
-      saveStoredStatus(next);
-      return next;
-    });
+  async function logout() {
+    await api.logout();
+    setAuthStatus((prev) => ({
+      ...prev,
+      loggedin: false,
+      user: null,
+    }));
   }
 
   const value = {
@@ -42,6 +55,7 @@ export function AuthProvider({ children }) {
     user: authStatus.user,
     authStatus,
     setAuthStatus,
+    loading,
     login,
     logout,
   };

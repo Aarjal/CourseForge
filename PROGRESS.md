@@ -16,13 +16,14 @@
   - Connected quiz entry button on Course Details page for enrolled users.
   - Guarded `courseCard.jsx` with `course.challenge?.length ?? 0`.
   - Added unit and component test suite using Vitest + Testing Library (7 tests passing).
-- [ ] **Phase 2: Client Data-Access Layer** *(IN PROGRESS)*
-  - Create adapter interface for courses, chapters, progress, and auth.
-  - Implement `mockAdapter` using versioned key `courseforge-courses-v2` with migration from legacy format.
-  - Implement `httpAdapter` wired to API endpoints (with `/api/v1` compatibility).
-  - Standardize all objects on `title` and `description`, duration as `Number` (minutes).
-  - Dynamic switching via `VITE_USE_MOCK`.
-- [ ] **Phase 3: Backend Completion & API Hardening**
+- [x] **Phase 2: Client Data-Access Layer**
+  - Designed clean adapter interface with `mockAdapter` and `httpAdapter`.
+  - Implemented versioned localStorage key `courseforge-courses-v2` with seamless migration from legacy `name`/`desc` schema and string durations.
+  - Standardized all entities on `title`, `description`, and duration as `Number` (minutes).
+  - Added dynamic adapter switching via `VITE_USE_MOCK` (defaults to `true`).
+  - Wired `AuthContext` and `CourseContext` to the unified data adapter.
+  - Added 5 unit tests for mock adapter and migration logic (12 client tests passing total).
+- [ ] **Phase 3: Backend Completion & API Hardening** *(IN PROGRESS)*
   - Complete chapter endpoints (GET chapters for course, auto `order`, reordering).
   - Centralized error-handling middleware & CastError handling.
   - Route prefix `/api/v1`.
@@ -79,10 +80,10 @@
 ---
 
 ## Last Completed Step
-- **Phase 1 completed**: Router & App.jsx decomposition with HashRouter, contexts, hooks, tests, and zero lint warnings.
+- **Phase 2 completed**: Abstract client data-access layer (`mockAdapter`, `httpAdapter`, `VITE_USE_MOCK`), schema standardization (`title`/`description`, `duration: Number`), auto-migration to `courseforge-courses-v2`, test suite expanded to 12 passing tests.
 
 ## What's Next
-- **Phase 2 implementation**: Client data-access layer (abstract adapter, mock adapter with `courseforge-courses-v2` migration, HTTP adapter, standardized `title`/`description`/duration as minutes).
+- **Phase 3 implementation**: Backend completion with `/api/v1` prefix, chapter retrieval routes, auto-assignment of chapter orders, centralized error handling & CastError middleware, course pagination/search/filtering, and server test suite (Supertest + MongoMemoryServer).
 
 ## How to Run & Test Current State
 - **Client Dev**: `cd client && npm run dev` &rarr; `http://localhost:5173/CourseForge/`

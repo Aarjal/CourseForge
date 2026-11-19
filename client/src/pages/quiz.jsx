@@ -8,9 +8,9 @@ function Quiz() {
   const [answers, setAnswers] = useState({});
   const [score, setScore] = useState(null);
 
-  function handleSubmit(event) {
+  async function handleSubmit(event) {
     event.preventDefault();
-    const result = submitQuiz(answers);
+    const result = await submitQuiz(answers);
     setScore(result);
   }
 
