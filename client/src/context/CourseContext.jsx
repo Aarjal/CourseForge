@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { CourseContext } from "./courseContextDef";
 import { useAuth } from "../hooks/useAuth";
 import { api } from "../api";
@@ -132,6 +132,72 @@ export function CourseProvider({ children }) {
     return newChapter;
   }
 
+  async function updateCourse(courseId, courseData) {
+    const updated = await api.updateCourse(courseId, courseData);
+    setCourses((prev) =>
+      prev.map((c) => (String(c.id) === String(courseId) ? updated : c))
+    );
+    return updated;
+  }
+
+  async function deleteCourse(courseId) {
+    await api.deleteCourse(courseId);
+    setCourses((prev) => prev.filter((c) => String(c.id) !== String(courseId)));
+  }
+
+  async function togglePublish(courseId) {
+    const updated = await api.togglePublish(courseId);
+    setCourses((prev) =>
+      prev.map((c) => (String(c.id) === String(courseId) ? updated : c))
+    );
+    return updated;
+  }
+
+  async function updateChapter(courseId, chapterId, chapterData) {
+    const updated = await api.updateChapter(chapterId, chapterData);
+    setCourses((prev) =>
+      prev.map((c) => {
+        if (String(c.id) !== String(courseId)) return c;
+        return {
+          ...c,
+          chapters: (c.chapters || []).map((ch) =>
+            String(ch.id) === String(chapterId) ? { ...ch, ...updated } : ch
+          ),
+        };
+      })
+    );
+    return updated;
+  }
+
+  async function deleteChapter(courseId, chapterId) {
+    await api.deleteChapter(chapterId);
+    setCourses((prev) =>
+      prev.map((c) => {
+        if (String(c.id) !== String(courseId)) return c;
+        return {
+          ...c,
+          chapters: (c.chapters || []).filter(
+            (ch) => String(ch.id) !== String(chapterId)
+          ),
+        };
+      })
+    );
+  }
+
+  async function reorderChapters(courseId, chapterOrders) {
+    const reordered = await api.reorderChapters(courseId, chapterOrders);
+    setCourses((prev) =>
+      prev.map((c) =>
+        String(c.id) === String(courseId) ? { ...c, chapters: reordered } : c
+      )
+    );
+    return reordered;
+  }
+
+  const getAnalytics = useCallback(async () => {
+    return api.getAnalytics();
+  }, []);
+
   const value = {
     courses,
     enrolledCourseIds,
@@ -145,7 +211,14 @@ export function CourseProvider({ children }) {
     calculateProgress,
     submitQuiz,
     addCourse,
+    updateCourse,
+    deleteCourse,
+    togglePublish,
     addChapter,
+    updateChapter,
+    deleteChapter,
+    reorderChapters,
+    getAnalytics,
   };
 
   return <CourseContext.Provider value={value}>{children}</CourseContext.Provider>;

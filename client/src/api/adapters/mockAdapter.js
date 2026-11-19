@@ -255,6 +255,74 @@ export const mockAdapter = {
     return { success: true };
   },
 
+  async togglePublish(courseId) {
+    const courses = loadAndMigrateCourses();
+    const index = courses.findIndex((c) => String(c.id) === String(courseId));
+    if (index === -1) {
+      const error = new Error("Course not found");
+      error.status = 404;
+      throw error;
+    }
+    courses[index].published = !courses[index].published;
+    saveCoursesToStorage(courses);
+    return courses[index];
+  },
+
+  async updateChapter(courseId, chapterId, chapterData) {
+    const courses = loadAndMigrateCourses();
+    const courseIndex = courses.findIndex((c) => String(c.id) === String(courseId));
+    if (courseIndex === -1) throw new Error("Course not found");
+
+    const chapters = courses[courseIndex].chapters || [];
+    const chIndex = chapters.findIndex((ch) => String(ch.id) === String(chapterId));
+    if (chIndex === -1) throw new Error("Chapter not found");
+
+    chapters[chIndex] = {
+      ...chapters[chIndex],
+      ...chapterData,
+      duration:
+        typeof chapterData.duration === "number"
+          ? chapterData.duration
+          : parseInt(chapterData.duration, 10) || chapters[chIndex].duration,
+    };
+    courses[courseIndex].chapters = chapters;
+    saveCoursesToStorage(courses);
+    return chapters[chIndex];
+  },
+
+  async deleteChapter(courseId, chapterId) {
+    const courses = loadAndMigrateCourses();
+    const courseIndex = courses.findIndex((c) => String(c.id) === String(courseId));
+    if (courseIndex === -1) throw new Error("Course not found");
+
+    courses[courseIndex].chapters = (courses[courseIndex].chapters || []).filter(
+      (ch) => String(ch.id) !== String(chapterId)
+    );
+    saveCoursesToStorage(courses);
+    return { success: true };
+  },
+
+  async reorderChapters(courseId, chapterOrders) {
+    const courses = loadAndMigrateCourses();
+    const courseIndex = courses.findIndex((c) => String(c.id) === String(courseId));
+    if (courseIndex === -1) throw new Error("Course not found");
+
+    const orderMap = {};
+    chapterOrders.forEach((o) => {
+      orderMap[String(o.id)] = o.order;
+    });
+
+    courses[courseIndex].chapters = (courses[courseIndex].chapters || [])
+      .map((ch) => ({
+        ...ch,
+        order: orderMap[String(ch.id)] !== undefined ? orderMap[String(ch.id)] : ch.order,
+      }))
+      .sort((a, b) => a.order - b.order);
+
+    saveCoursesToStorage(courses);
+    return courses[courseIndex].chapters;
+  },
+
   async addChapter(courseId, chapterData) {
     const courses = loadAndMigrateCourses();
     const index = courses.findIndex((c) => String(c.id) === String(courseId));
@@ -387,5 +455,52 @@ export const mockAdapter = {
     }
 
     return { score, total: DEFAULT_QUIZ_QUESTIONS.length, passed: score === DEFAULT_QUIZ_QUESTIONS.length };
+  },
+
+  // Analytics
+  async getAnalytics() {
+    const courses = loadAndMigrateCourses();
+    const status = getStoredStatus();
+    const enrolled = status.en_courses || [];
+    const completedMap = status.completed_chap || {};
+
+    const courseStats = courses.map((c) => {
+      const isEnrolled = enrolled.includes(Number(c.id));
+      const chapCount = (c.chapters || []).length;
+      const completedChaps = completedMap[c.id] || [];
+      const isComplete = chapCount > 0 && completedChaps.length >= chapCount;
+
+      return {
+        id: c.id,
+        title: c.title,
+        published: c.published !== false,
+        price: c.price || 0,
+        enrollmentsCount: isEnrolled ? 1 : 0,
+        completionsCount: isComplete ? 1 : 0,
+        completionRate: isEnrolled ? (isComplete ? 100 : Math.round((completedChaps.length / chapCount) * 100)) : 0,
+      };
+    });
+
+    const totalPublished = courses.filter((c) => c.published !== false).length;
+    return {
+      summary: {
+        totalCourses: courses.length,
+        publishedCourses: totalPublished,
+        draftCourses: courses.length - totalPublished,
+        totalStudents: enrolled.length > 0 ? 1 : 0,
+        totalEnrollments: enrolled.length,
+        totalCompletions: courseStats.filter((c) => c.completionsCount > 0).length,
+      },
+      courses: courseStats,
+      recentEnrollments: enrolled.map((courseId) => {
+        const found = courses.find((c) => String(c.id) === String(courseId));
+        return {
+          id: `enr-${courseId}`,
+          user: status.user || { name: "Demo Student", email: "student@demo.local" },
+          course: { id: courseId, title: found?.title || `Course ${courseId}` },
+          enrolledAt: new Date().toISOString(),
+        };
+      }),
+    };
   },
 };

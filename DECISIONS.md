@@ -84,3 +84,8 @@ This log documents every architectural, technical, and product design decision m
 ### [2026-11-20] Decision 18: Server-Enforced Content Gating via `optionalProtect`
 - **Context**: Preview chapters must remain accessible to unauthenticated guests for marketing and exploration. Non-preview chapters must be strictly locked to enrolled students (or instructors/admins) on the server, not just hidden by the UI.
 - **Decision**: Implemented `optionalProtect` middleware on chapter access endpoints. It non-blockingly parses JWT credentials if provided. If a chapter has `preview: true`, it is served immediately. If `preview: false`, the server verifies the user's active enrollment record in MongoDB; non-enrolled students receive 403 Forbidden, and unauthenticated guests receive 401 Unauthorized.
+
+
+### [2026-11-20] Decision 19: Global MongoMemoryServer Singleton for Windows Test Stability
+- **Context**: In Jest integration tests on Windows, repeated creation and destruction of MongoMemoryServer instances per test file caused socket/file lock contention in the temporary directory, resulting in intermittent `fassert()` crashes.
+- **Decision**: Configured Jest `globalSetup` and `globalTeardown` to instantiate a single persistent MongoMemoryServer for the entire test suite run, exporting `TEST_MONGO_URI`. Each test file connects to this singleton instance, and `afterEach` safely wipes collections to guarantee complete test isolation. This reduced overall test duration by >50% and eliminated mongod process collisions.

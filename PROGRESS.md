@@ -61,10 +61,13 @@
   - Server-enforced content locking: `getChapterById` checks enrollment (returns 403 on locked chapters for non-enrolled users; bypasses check for instructors/admins).
   - `optionalProtect` middleware allowing public previews without auth while verifying tokens on locked chapters.
   - Added 13 new integration tests in `enrollmentProgress.test.js` (36 total server tests passing).
-- [ ] **Phase 7: Admin & Instructor Panel**
-  - Course authoring, editing, publish toggle.
-  - Chapter management and reordering.
-  - Enrollment viewing and analytics overview.
+- [x] **Phase 7: Admin & Instructor Panel**
+  - Course management: inline editing, publish/unpublish toggling, course deletion with confirmation.
+  - Chapter management: curriculum expansion drawer, chapter deletion, and interactive Move Up/Move Down chapter reordering via `/reorder`.
+  - Instructor Analytics backend (`GET /api/v1/analytics/overview`): summary metrics (total courses, draft/published, unique students, completions), per-course completion rates, and recent enrollment feed.
+  - Tabbed instructor UI in `admin.jsx`: "Course Catalog", "Create Course", and "Analytics & Enrollments".
+  - Shared Jest `globalSetup` / `globalTeardown` singleton instance eliminating Windows socket/file contention.
+  - Added 3 server tests in `analytics.test.js` (39 total server tests passing) and 3 client tests in `adminFlow.test.jsx` (19 total client tests passing).
 - [ ] **Phase 8: File Uploads & Study Materials**
   - Cloudinary upload pipeline for videos & documents.
   - Local-disk storage fallback interface when credentials are not yet supplied.
@@ -97,15 +100,15 @@
 ---
 
 ## Last Completed Step
-- **Phase 6 completed**: Enrollment & Progress models, enrollment endpoints, chapter completion tracking, server-enforced locked content rules with optional auth, and 36 server tests passing.
+- **Phase 7 completed**: Control center with course CRUD & publish toggling, interactive chapter reordering, instructor analytics overview with student metrics, shared MongoMemoryServer singleton setup, and 39 server + 19 client tests passing.
 
 ## What's Next
-- **Phase 7: Admin & Instructor Panel** — Course edit / unpublish flows, chapter reordering UI (drag/drop or order buttons), instructor dashboard analytics (enrolled students count, completion rates), and user management.
+- **Phase 8: File Uploads & Study Materials** — Media upload pipeline for videos and PDF study materials, supporting local disk storage fallback and Cloudinary configuration, with media access security.
 
 ## How to Run & Test Current State
 - **Client Dev**: `cd client && npm run dev` &rarr; `http://localhost:5173/CourseForge/`
-- **Client Tests**: `cd client && npm test` (16 tests)
+- **Client Tests**: `cd client && npm test` (19 tests)
 - **Client Build**: `cd client && npm run build`
-- **Server Tests**: `cd server && npm test` (36 tests)
+- **Server Tests**: `cd server && npm test` (39 tests)
 - **Server Admin Seed**: `cd server && npm run seed:admin`
 - **Server**: `cd server && npm run dev`

@@ -407,4 +407,9 @@ export const httpAdapter = {
       };
     }
   },
+
+  // Analytics
+  async getAnalytics() {
+    return request("/analytics/overview");
+  },
 };

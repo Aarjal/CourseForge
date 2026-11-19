@@ -1,14 +1,12 @@
 const mongoose = require("mongoose");
-const { MongoMemoryServer } = require("mongodb-memory-server");
-
-let mongoServer;
 
 beforeAll(async () => {
-  mongoServer = await MongoMemoryServer.create();
-  const uri = mongoServer.getUri();
-  await mongoose.connect(uri, {
-    driverInfo: { name: "nodejs", version: process.version },
-  });
+  const uri = process.env.TEST_MONGO_URI;
+  if (mongoose.connection.readyState === 0) {
+    await mongoose.connect(uri, {
+      driverInfo: { name: "nodejs", version: process.version },
+    });
+  }
 }, 180000);
 
 afterEach(async () => {
@@ -25,9 +23,6 @@ afterAll(async () => {
     await mongoose.connection.dropDatabase();
     await mongoose.disconnect();
   }
-  if (mongoServer) {
-    await mongoServer.stop();
-  }
 });
 
 /**
@@ -40,7 +35,7 @@ async function createTestUser(overrides = {}) {
 
   const userData = {
     name: overrides.name || "Test User",
-    email: overrides.email || `test-${Date.now()}@example.com`,
+    email: overrides.email || `test-${Date.now()}-${Math.random()}@example.com`,
     password: overrides.password || "password123",
     role: overrides.role || "instructor",
     ...overrides,

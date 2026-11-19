@@ -7,6 +7,7 @@ const chapterFlatRoutes = require("./routes/chapterFlatRoutes");
 const authRoutes = require("./routes/authRoutes");
 const enrollmentRoutes = require("./routes/enrollmentRoutes");
 const progressRoutes = require("./routes/progressRoutes");
+const analyticsRoutes = require("./routes/analyticsRoutes");
 const errorHandler = require("./middleware/errorHandler");
 
 const app = express();
@@ -48,6 +49,7 @@ app.get("/api/v1/health", (req, res) => {
 app.use("/api/v1/auth", authRoutes);
 app.use("/api/v1/enrollments", enrollmentRoutes);
 app.use("/api/v1/progress", progressRoutes);
+app.use("/api/v1/analytics", analyticsRoutes);
 app.use("/api/v1/courses", courseRoutes);
 app.use("/api/v1/courses/:course_id/chapters", chapterRoutes);
 app.use("/api/v1/chapters", chapterFlatRoutes);
@@ -56,6 +58,7 @@ app.use("/api/v1/chapters", chapterFlatRoutes);
 app.use("/api/auth", authRoutes);
 app.use("/api/enrollments", enrollmentRoutes);
 app.use("/api/progress", progressRoutes);
+app.use("/api/analytics", analyticsRoutes);
 app.use("/api/courses", courseRoutes);
 app.use("/api/courses/:course_id/chapters", chapterRoutes);
 app.use("/api/chapters", chapterFlatRoutes);
