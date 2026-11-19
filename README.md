@@ -3,150 +3,139 @@
 </p>
 
 <h1 align="center">CourseForge</h1>
-<p align="center"><i>An E-learning platform for enthusiastic learners with every resource and services they'd ever seek. </i></p>
+<p align="center"><i>An E-learning platform for enthusiastic learners with practical, structured courses.</i></p>
 
 ---
-<p>
-<p>
-<p>
-  
+
 ## Current Status
 
-We're still in building phase as this is the second week of development. The groundwork for the application is there but there's yet to add lots and lots of functionality. First week was all frontend and static things but now we've added the backend part and polished frontend even better. User authentication, however is still remaining(student and admins aren't separated). Simple general workflow to test is still possible with the current version. The UI/UX isn't there yet indeed but for now we're just happy with how it works.
-The login page is just a demo version for now--  
-You may use demo email and password :)
-
-Currently it has a working frontend demo. Students can login browse and search courses,open course details,enroll in courses,complete chapters and track progress. The app currently uses local storage for demo data. The express and mongodb backend has been started, but the frontend is not connected with backend yet. Auth, file uploads and full admin permissions are planned for later development. 
+CourseForge is in active development. The frontend currently operates as a standalone demo running on browser `localStorage` (deployed on GitHub Pages). The Express + MongoDB backend exists with foundational models and routes, and is being prepared for end-to-end integration.
 
 ---
-<p>
-<p>
-<p>
-  
+
 ## About CourseForge
 
-CourseForge is a full-stack web application where-
-
---admins can build and design any structured courses out of respective chapters and learning materials.  
---students can browse, enroll, work through the available content at their own pace.
-
-And ideally later on..
-  The courses will be organized and structured into different chapters, with individual places of content like( docs, recorded lectures etc.) which will be LOCKED until a student enrolls. After enrollment, the student can access their unlocked course materials, complete different quizzes of their choice and most importantly track their progress as they move through it. Admins will be able to manage the full lifecycle on their end (creating and editing courses, uploading study materials and reviewing who have enrolled).
+CourseForge is a full-stack e-learning web application where:
+- **Instructors / Admins** can structure and publish courses organized into chapters and learning materials.
+- **Students** can browse courses, enroll, access public previews and unlocked lessons, and track their learning progress.
 
 ---
-<p>
-<p>
-<p>
-  
+
 ## App Features
 
-**Student side**
-- login wth demo credentials 
--  Browse through the available courses  
--  search for courses
--  view course details and chapters 
--  Enroll via payment flow  
--  Access their unlocked contents  
--  Take quizzes on topics of their choice  
--  Track their progress  
+### Student Side (Current Demo)
+- Demo login with mock credentials
+- Browse available course catalog
+- Search courses by title
+- View course details and chapter outlines
+- One-click course enrollment (persisted in `localStorage`)
+- Preview public chapters before enrolling; access unlocked lessons once enrolled
+- Mark chapters as complete and track course completion percentages
+- Take an interactive knowledge check quiz
 
-**Admin side**
--  Create demo courses 
--  add chapters to a course 
--  save data in local storage
--  choose wether chapter is public preview or not
--  add chapters to existing course or create a new course to add chapter(option given)
+### Admin Side (Current Demo)
+- Create courses with title, category, level, description, and published status
+- Add chapters to existing courses or new course drafts
+- Toggle chapter public preview flags
+- Save courses and chapters to browser storage
 
-**Planned features**
-- real authentication
-- mongodb persistence
-- file uploads
-- payment enrollment
-- quiz management
-
+### Planned Features
+- Full JWT authentication with separate `student` and `admin` roles
+- Real database persistence via MongoDB & Mongoose
+- Enforced role and locked-content security on the server
+- Study material file uploads via Cloudinary
+- Real payment / enrollment integration
+- Multi-quiz management per course
+- Cloud deployment on Render (server) and Vercel (client)
 
 ---
-<p>
-<p>
-<p>
-  
+
 ## Tech Stack
 
-- React with Vite - Frontend
-- Node JS with Express - Backend 
-- MongoDB with Mongoose - Database
-- Cloudinary - File storage (planning)
-- JWT - Authentication (planning)
-- Vercel and Render - Deployment (planning) { for now - github pages}
-- mongodb with mongoose - planned for database  
+- **Frontend**: React 19, Vite 8
+- **Backend**: Node.js, Express 5, Mongoose 9
+- **Database**: MongoDB Atlas
+- **File Storage**: Cloudinary *(planned)*
+- **Authentication**: JWT & bcrypt *(in progress)*
+- **Deployment**: GitHub Pages *(current client demo)*, Render + Vercel *(planned)*
 
-Note: Backend is fully functional but not yet deployed — currently runs locally ( thats soon to happen )
 ---
-<p>
-<p>
-<p>
-  
+
 ## Some Glimpses
-<img width="857" height="766" alt="Screenshot 2026-09-21 at 12 45 44 AM" src="https://github.com/user-attachments/assets/81780ffc-2318-4abb-8dc3-837d96b791d3" />
-<img width="1244" height="775" alt="Screenshot 2026-09-21 at 12 46 22 AM" src="https://github.com/user-attachments/assets/0ab5c3f9-3e3f-4e0d-8dc9-fbd839143d2b" />
-<img width="1352" height="776" alt="Screenshot 2026-09-21 at 12 46 39 AM" src="https://github.com/user-attachments/assets/9dd9e7d0-c985-474c-a9fb-f73ca85bbc66" />
-<img width="1333" height="786" alt="Screenshot 2026-09-21 at 12 47 05 AM" src="https://github.com/user-attachments/assets/e2bdde94-2508-411d-a249-53afe822ce55" />
 
-
+<img width="857" height="766" alt="CourseForge Dashboard" src="https://github.com/user-attachments/assets/81780ffc-2318-4abb-8dc3-837d96b791d3" />
+<img width="1244" height="775" alt="Course Catalog" src="https://github.com/user-attachments/assets/0ab5c3f9-3e3f-4e0d-8dc9-fbd839143d2b" />
+<img width="1352" height="776" alt="Course Details" src="https://github.com/user-attachments/assets/9dd9e7d0-c985-474c-a9fb-f73ca85bbc66" />
+<img width="1333" height="786" alt="Admin Course Builder" src="https://github.com/user-attachments/assets/e2bdde94-2508-411d-a249-53afe822ce55" />
 
 ---
-<p>
-<p>
-<p>
-  
+
 ## Getting Started
 
-
 ### Prerequisites
-- Node js
-- Mongodb connection
+- Node.js (v18 or higher recommended)
 - npm
+- MongoDB Atlas account or local MongoDB instance
 
 ### Installation
 
 ```bash
-# To clone the repo
+# 1. Clone the repository
 git clone https://github.com/Aarjal/CourseForge.git
-cd courseforge
+cd CourseForge
 
-# To install frontend dependencies
-cd ../client
-npm install
-
-#To install backend dependencies
-cd server
-npm install
-```
-
-```bash
-git clone https://github.com/Aarjal/CourseForge.git
-cd CourseForge/client
-npm install
-
-### Running locally
-
-```bash
-
-# To start frontend 
+# 2. Install client dependencies
 cd client
-npm start
+npm install
+
+# 3. Install server dependencies
+cd ../server
+npm install
 ```
 
+### Environment Setup
 
+Create `.env` files from their respective templates:
 
-## live demo:
-[open this link to see demo](https://aarjal.github.io/CourseForge/)
-current demo uses local storage , so course data is saved only in browser being used for now. 
+```bash
+# In client/
+cd ../client
+cp .env.example .env
+
+# In server/
+cd ../server
+cp .env.example .env
+```
+
+Edit `server/.env` to configure your MongoDB connection string (`MONGO_URI`) and port if needed:
+```env
+PORT=5000
+MONGO_URI=your_mongodb_connection_string
+CLIENT_ORIGIN=http://localhost:5173,http://localhost:5174,https://aarjal.github.io
+```
+
+### Running Locally
+
+Run client and server in separate terminal windows:
+
+```bash
+# Start the frontend dev server (from client/ directory)
+cd client
+npm run dev
+# Accessible at http://localhost:5173/CourseForge/
+
+# Start the backend dev server (from server/ directory)
+cd server
+npm run dev
+# Accessible at http://localhost:5000
+```
 
 ---
-<p>
-<p>
-<p>
-  
-Built as part of **[Thirdspace YSWS]** with great love and effort :)
 
+## Live Demo
+[Open GitHub Pages Demo](https://aarjal.github.io/CourseForge/)  
+*(The current demo uses `localStorage`; course data is saved within your active browser).*
+
+---
+
+Built as part of **[Thirdspace YSWS]** with great love and effort :)
