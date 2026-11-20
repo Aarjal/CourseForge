@@ -36,6 +36,10 @@ const courseSchema = new mongoose.Schema(
       default: 0,
       min: [0, "Price cannot be negative"],
     },
+    thumbnail: {
+      type: String,
+      default: "",
+    },
     createdBy: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",

@@ -31,3 +31,8 @@ Thumbs.db
 *.sln
 *.sw?
 *.local
+
+
+# Uploaded media (local disk storage)
+uploads/
+server/uploads/

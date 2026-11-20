@@ -1,4 +1,5 @@
 const express = require("express");
+const path = require("path");
 const cors = require("cors");
 const cookieParser = require("cookie-parser");
 const courseRoutes = require("./routes/courseRoutes");
@@ -8,6 +9,7 @@ const authRoutes = require("./routes/authRoutes");
 const enrollmentRoutes = require("./routes/enrollmentRoutes");
 const progressRoutes = require("./routes/progressRoutes");
 const analyticsRoutes = require("./routes/analyticsRoutes");
+const uploadRoutes = require("./routes/uploadRoutes");
 const errorHandler = require("./middleware/errorHandler");
 
 const app = express();
@@ -24,6 +26,7 @@ const allowedOrigins = process.env.CLIENT_ORIGIN
 
 app.use(express.json());
 app.use(cookieParser());
+app.use("/uploads", express.static(path.join(__dirname, "../uploads")));
 app.use(
   cors({
     origin: (origin, callback) => {
@@ -47,6 +50,7 @@ app.get("/api/v1/health", (req, res) => {
 
 // v1 API Routes
 app.use("/api/v1/auth", authRoutes);
+app.use("/api/v1/uploads", uploadRoutes);
 app.use("/api/v1/enrollments", enrollmentRoutes);
 app.use("/api/v1/progress", progressRoutes);
 app.use("/api/v1/analytics", analyticsRoutes);
@@ -56,6 +60,7 @@ app.use("/api/v1/chapters", chapterFlatRoutes);
 
 // Backward-compatible alias for existing endpoints
 app.use("/api/auth", authRoutes);
+app.use("/api/uploads", uploadRoutes);
 app.use("/api/enrollments", enrollmentRoutes);
 app.use("/api/progress", progressRoutes);
 app.use("/api/analytics", analyticsRoutes);

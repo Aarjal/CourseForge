@@ -36,6 +36,18 @@ const chapterSchema = new mongoose.Schema(
       type: String,
       default: "",
     },
+    videoUrl: {
+      type: String,
+      default: "",
+    },
+    materials: [
+      {
+        title: { type: String, required: true },
+        url: { type: String, required: true },
+        type: { type: String, default: "document" },
+        size: { type: Number, default: 0 },
+      },
+    ],
   },
   {
     timestamps: true,

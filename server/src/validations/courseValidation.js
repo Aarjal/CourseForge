@@ -10,6 +10,7 @@ const createCourseSchema = {
     }),
     published: z.boolean().optional(),
     price: z.number().nonnegative().optional(),
+    thumbnail: z.string().optional(),
   }),
 };
 
@@ -21,6 +22,7 @@ const updateCourseSchema = {
     level: z.enum(["Beginner", "Intermediate", "Advanced"]).optional(),
     published: z.boolean().optional(),
     price: z.number().nonnegative().optional(),
+    thumbnail: z.string().optional(),
   }),
 };
 

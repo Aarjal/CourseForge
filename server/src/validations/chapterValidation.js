@@ -8,6 +8,17 @@ const createChapterSchema = {
     order: z.coerce.number().int().positive().optional(),
     type: z.enum(["Theory", "Lab", "Video"]).optional(),
     content: z.string().optional(),
+    videoUrl: z.string().optional(),
+    materials: z
+      .array(
+        z.object({
+          title: z.string(),
+          url: z.string(),
+          type: z.string().optional(),
+          size: z.number().optional(),
+        })
+      )
+      .optional(),
   }),
 };
 
@@ -19,6 +30,17 @@ const updateChapterSchema = {
     order: z.coerce.number().int().positive().optional(),
     type: z.enum(["Theory", "Lab", "Video"]).optional(),
     content: z.string().optional(),
+    videoUrl: z.string().optional(),
+    materials: z
+      .array(
+        z.object({
+          title: z.string(),
+          url: z.string(),
+          type: z.string().optional(),
+          size: z.number().optional(),
+        })
+      )
+      .optional(),
   }),
 };
 
