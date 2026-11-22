@@ -68,10 +68,15 @@
   - Tabbed instructor UI in `admin.jsx`: "Course Catalog", "Create Course", and "Analytics & Enrollments".
   - Shared Jest `globalSetup` / `globalTeardown` singleton instance eliminating Windows socket/file contention.
   - Added 3 server tests in `analytics.test.js` (39 total server tests passing) and 3 client tests in `adminFlow.test.jsx` (19 total client tests passing).
-- [ ] **Phase 8: File Uploads & Study Materials**
+- [x] **Phase 8: File Uploads & Study Materials**
   - Cloudinary upload pipeline for videos & documents.
   - Local-disk storage fallback interface when credentials are not yet supplied.
   - Secure media URLs for enrolled content.
+  - Client data-access adapter layer with multipart file upload support (`uploadFile`).
+  - Course thumbnail display on catalog cards and hero sections with graceful fallback.
+  - Interactive chapter video player and downloadable study materials list in Course Details.
+  - Admin/Instructor Control Center media management (course thumbnail upload, chapter video and PDF attachments).
+  - 44 server tests and 22 client tests passing across all test suites.
 - [ ] **Phase 9: Quizzes & Assessment Engine**
   - Quiz, Question, Attempt models.
   - Admin quiz builder.
@@ -100,15 +105,15 @@
 ---
 
 ## Last Completed Step
-- **Phase 7 completed**: Control center with course CRUD & publish toggling, interactive chapter reordering, instructor analytics overview with student metrics, shared MongoMemoryServer singleton setup, and 39 server + 19 client tests passing.
+- **Phase 8 completed**: File upload pipeline with dual-mode Cloudinary & local disk storage fallback, Multer MIME type filtering, schema extension for thumbnails/videoUrl/materials, client adapter multipart upload support, admin media upload controls, student interactive video player and downloadable study materials viewer with locked content gating, and 44 server + 22 client tests passing.
 
 ## What's Next
-- **Phase 8: File Uploads & Study Materials** — Media upload pipeline for videos and PDF study materials, supporting local disk storage fallback and Cloudinary configuration, with media access security.
+- **Phase 9: Quizzes & Assessment Engine** — Quiz, Question, and Attempt models, admin quiz builder, student attempt tracking, scoring, and pass thresholds.
 
 ## How to Run & Test Current State
 - **Client Dev**: `cd client && npm run dev` &rarr; `http://localhost:5173/CourseForge/`
-- **Client Tests**: `cd client && npm test` (19 tests)
+- **Client Tests**: `cd client && npm test` (22 tests)
 - **Client Build**: `cd client && npm run build`
-- **Server Tests**: `cd server && npm test` (39 tests)
+- **Server Tests**: `cd server && npm test` (44 tests)
 - **Server Admin Seed**: `cd server && npm run seed:admin`
 - **Server**: `cd server && npm run dev`
