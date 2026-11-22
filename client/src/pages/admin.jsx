@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import Navbar from "../components/Navbar";
 import { useCourses } from "../hooks/useCourses";
+import { resolveMediaUrl } from "../api/adapters/httpAdapter";
 
 function Admin() {
   const {
@@ -14,11 +15,13 @@ function Admin() {
     deleteChapter,
     reorderChapters,
     getAnalytics,
+    uploadFile,
   } = useCourses();
 
   const [activeTab, setActiveTab] = useState("manage"); // 'manage' | 'create' | 'analytics'
   const [message, setMessage] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
+  const [uploading, setUploading] = useState(false);
 
   // Create course state
   const [courseForm, setCourseForm] = useState({
@@ -28,12 +31,15 @@ function Admin() {
     description: "",
     price: 0,
     published: false,
+    thumbnail: "",
   });
 
   const [chapterForm, setChapterForm] = useState({
     title: "",
     duration: "",
     preview: true,
+    videoUrl: "",
+    materials: [],
   });
 
   const [draftChapters, setDraftChapters] = useState([]);
@@ -106,6 +112,87 @@ function Admin() {
     }));
   }
 
+  // File upload handlers
+  async function handleThumbnailUpload(event) {
+    const file = event.target.files?.[0];
+    if (!file) return;
+    setUploading(true);
+    try {
+      setErrorMessage("");
+      const uploaded = await uploadFile(file, "thumbnails");
+      setCourseForm((prev) => ({ ...prev, thumbnail: uploaded.url }));
+      showSuccess("Thumbnail uploaded successfully.");
+    } catch (err) {
+      showError(err.message || "Failed to upload thumbnail");
+    } finally {
+      setUploading(false);
+    }
+  }
+
+  async function handleEditThumbnailUpload(event) {
+    const file = event.target.files?.[0];
+    if (!file) return;
+    setUploading(true);
+    try {
+      setErrorMessage("");
+      const uploaded = await uploadFile(file, "thumbnails");
+      setEditFormData((prev) => ({ ...prev, thumbnail: uploaded.url }));
+      showSuccess("Thumbnail uploaded successfully.");
+    } catch (err) {
+      showError(err.message || "Failed to upload thumbnail");
+    } finally {
+      setUploading(false);
+    }
+  }
+
+  async function handleVideoUpload(event) {
+    const file = event.target.files?.[0];
+    if (!file) return;
+    setUploading(true);
+    try {
+      setErrorMessage("");
+      const uploaded = await uploadFile(file, "videos");
+      setChapterForm((prev) => ({ ...prev, videoUrl: uploaded.url }));
+      showSuccess("Video uploaded successfully.");
+    } catch (err) {
+      showError(err.message || "Failed to upload video");
+    } finally {
+      setUploading(false);
+    }
+  }
+
+  async function handleMaterialUpload(event) {
+    const file = event.target.files?.[0];
+    if (!file) return;
+    setUploading(true);
+    try {
+      setErrorMessage("");
+      const uploaded = await uploadFile(file, "documents");
+      const newMaterial = {
+        title: file.name,
+        url: uploaded.url,
+        type: uploaded.mimetype || file.type || "application/pdf",
+        size: uploaded.size || file.size || 0,
+      };
+      setChapterForm((prev) => ({
+        ...prev,
+        materials: [...(prev.materials || []), newMaterial],
+      }));
+      showSuccess(`Material "${file.name}" attached.`);
+    } catch (err) {
+      showError(err.message || "Failed to upload study material");
+    } finally {
+      setUploading(false);
+    }
+  }
+
+  function handleRemoveMaterial(index) {
+    setChapterForm((prev) => ({
+      ...prev,
+      materials: (prev.materials || []).filter((_, i) => i !== index),
+    }));
+  }
+
   async function handleAddChapter(event) {
     event.preventDefault();
 
@@ -118,7 +205,9 @@ function Admin() {
       title: chapterForm.title,
       duration: parseInt(chapterForm.duration, 10) || 15,
       preview: chapterForm.preview,
-      type: "Theory",
+      type: chapterForm.videoUrl ? "Video" : "Theory",
+      videoUrl: chapterForm.videoUrl || "",
+      materials: chapterForm.materials || [],
     };
 
     try {
@@ -141,6 +230,8 @@ function Admin() {
         title: "",
         duration: "",
         preview: true,
+        videoUrl: "",
+        materials: [],
       });
     } catch (err) {
       showError(err.message || "Failed to add chapter");
@@ -166,6 +257,7 @@ function Admin() {
         level: courseForm.level,
         published: Boolean(courseForm.published),
         price: Number(courseForm.price) || 0,
+        thumbnail: courseForm.thumbnail || "",
         chapters: draftChapters,
       });
 
@@ -177,6 +269,7 @@ function Admin() {
         description: "",
         price: 0,
         published: false,
+        thumbnail: "",
       });
       setDraftChapters([]);
       setChapterTarget("new");
@@ -216,6 +309,7 @@ function Admin() {
       category: course.category,
       level: course.level,
       price: course.price || 0,
+      thumbnail: course.thumbnail || "",
     });
   }
 
@@ -380,6 +474,34 @@ function Admin() {
                               </select>
                             </label>
                           </div>
+                          <label>
+                            Thumbnail (Image URL or Upload)
+                            <div className="upload-field-group">
+                              <input
+                                value={editFormData.thumbnail || ""}
+                                onChange={(e) =>
+                                  setEditFormData({ ...editFormData, thumbnail: e.target.value })
+                                }
+                                placeholder="https://... or /uploads/..."
+                              />
+                              <label className="admin-small-button" style={{ cursor: "pointer", margin: 0 }}>
+                                📁 Upload
+                                <input
+                                  type="file"
+                                  accept="image/*"
+                                  onChange={handleEditThumbnailUpload}
+                                  style={{ display: "none" }}
+                                />
+                              </label>
+                            </div>
+                            {editFormData.thumbnail && (
+                              <img
+                                src={resolveMediaUrl(editFormData.thumbnail)}
+                                alt="Thumbnail Preview"
+                                className="upload-preview"
+                              />
+                            )}
+                          </label>
                           <div style={{ display: "flex", gap: "10px", marginTop: "8px" }}>
                             <button
                               className="admin-small-button primary"
@@ -595,6 +717,34 @@ function Admin() {
                   </label>
                 </div>
 
+                <label>
+                  Thumbnail (Image URL or Upload)
+                  <div className="upload-field-group">
+                    <input
+                      name="thumbnail"
+                      value={courseForm.thumbnail || ""}
+                      onChange={handleCourseChange}
+                      placeholder="Image URL or upload a file"
+                    />
+                    <label className="admin-small-button" style={{ cursor: "pointer", margin: 0 }}>
+                      📁 Upload
+                      <input
+                        type="file"
+                        accept="image/*"
+                        onChange={handleThumbnailUpload}
+                        style={{ display: "none" }}
+                      />
+                    </label>
+                  </div>
+                  {courseForm.thumbnail && (
+                    <img
+                      src={resolveMediaUrl(courseForm.thumbnail)}
+                      alt="Thumbnail Preview"
+                      className="upload-preview"
+                    />
+                  )}
+                </label>
+
                 <label className="checkbox-row">
                   <input
                     name="published"
@@ -605,8 +755,8 @@ function Admin() {
                   Publish immediately upon creation
                 </label>
 
-                <button className="primary-button" type="submit">
-                  Save and Create Course
+                <button className="primary-button" type="submit" disabled={uploading}>
+                  {uploading ? "Uploading..." : "Save and Create Course"}
                 </button>
               </form>
 
@@ -653,6 +803,65 @@ function Admin() {
                   />
                 </label>
 
+                <label>
+                  Video Lecture (URL or Upload)
+                  <div className="upload-field-group">
+                    <input
+                      name="videoUrl"
+                      value={chapterForm.videoUrl || ""}
+                      onChange={handleChapterChange}
+                      placeholder="Video URL or upload video file"
+                    />
+                    <label className="admin-small-button" style={{ cursor: "pointer", margin: 0 }}>
+                      🎥 Upload Video
+                      <input
+                        type="file"
+                        accept="video/*"
+                        onChange={handleVideoUpload}
+                        style={{ display: "none" }}
+                      />
+                    </label>
+                  </div>
+                </label>
+
+                <label>
+                  Study Materials (PDFs, Notes)
+                  <div className="upload-field-group">
+                    <label className="admin-small-button" style={{ cursor: "pointer", margin: 0 }}>
+                      📄 Attach PDF / Document
+                      <input
+                        type="file"
+                        accept=".pdf,.doc,.docx,.txt"
+                        onChange={handleChapterMaterialUpload}
+                        style={{ display: "none" }}
+                      />
+                    </label>
+                  </div>
+                  {chapterForm.materials && chapterForm.materials.length > 0 && (
+                    <ul className="materials-list" style={{ marginTop: "8px" }}>
+                      {chapterForm.materials.map((m, idx) => (
+                        <li key={idx} className="material-item">
+                          <span className="material-info">
+                            📄 <strong>{m.title}</strong>
+                            {m.size ? (
+                              <span className="material-size">
+                                ({(m.size / 1024).toFixed(1)} KB)
+                              </span>
+                            ) : null}
+                          </span>
+                          <button
+                            type="button"
+                            className="admin-small-button danger"
+                            onClick={() => handleRemoveMaterial(idx)}
+                          >
+                            Remove
+                          </button>
+                        </li>
+                      ))}
+                    </ul>
+                  )}
+                </label>
+
                 <label className="checkbox-row">
                   <input
                     name="preview"
@@ -663,8 +872,8 @@ function Admin() {
                   Public preview (accessible without enrollment)
                 </label>
 
-                <button className="secondary-button" type="submit">
-                  Add chapter
+                <button className="secondary-button" type="submit" disabled={uploading}>
+                  {uploading ? "Uploading..." : "Add chapter"}
                 </button>
               </form>
 
