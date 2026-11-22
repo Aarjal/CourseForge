@@ -129,6 +129,7 @@ export function migrateCourseToV2(course) {
     category: course.category || "Development",
     level: course.level || "Beginner",
     published: course.published !== false,
+    thumbnail: course.thumbnail || "",
     chapters: (course.chapters || []).map((ch, idx) => ({
       id: ch.id,
       title: ch.title || `Chapter ${idx + 1}`,
@@ -136,6 +137,8 @@ export function migrateCourseToV2(course) {
       preview: Boolean(ch.preview),
       type: ch.type || "Theory",
       order: ch.order || idx + 1,
+      videoUrl: ch.videoUrl || "",
+      materials: Array.isArray(ch.materials) ? ch.materials : [],
     })),
     challenge: (course.challenge || []).map((cl) => ({
       id: cl.id,
@@ -347,6 +350,8 @@ export const mockAdapter = {
       preview: Boolean(chapterData.preview),
       type: chapterData.type || "Theory",
       order: existingChapters.length + 1,
+      videoUrl: chapterData.videoUrl || "",
+      materials: Array.isArray(chapterData.materials) ? chapterData.materials : [],
     };
 
     course.chapters = [...existingChapters, newChapter];
@@ -501,6 +506,21 @@ export const mockAdapter = {
           enrolledAt: new Date().toISOString(),
         };
       }),
+    };
+  },
+
+  // Media & Uploads (Mock fallback)
+  async uploadFile(file) {
+    const mockUrl =
+      typeof URL !== "undefined" && URL.createObjectURL
+        ? URL.createObjectURL(file)
+        : `/uploads/mock-${file.name}`;
+    return {
+      url: mockUrl,
+      filename: `mock-${Date.now()}-${file.name}`,
+      originalName: file.name,
+      size: file.size,
+      mimetype: file.type || "application/octet-stream",
     };
   },
 };

@@ -52,10 +52,14 @@ function processQueue(error, token = null) {
 
 async function request(endpoint, options = {}) {
   const token = getToken();
+  const isFormData = typeof FormData !== "undefined" && options.body instanceof FormData;
   const headers = {
-    "Content-Type": "application/json",
     ...options.headers,
   };
+
+  if (!isFormData && !headers["Content-Type"]) {
+    headers["Content-Type"] = "application/json";
+  }
 
   if (token) {
     headers.Authorization = `Bearer ${token}`;
@@ -139,6 +143,19 @@ async function request(endpoint, options = {}) {
   return data;
 }
 
+export function resolveMediaUrl(url) {
+  if (!url) return "";
+  if (
+    url.startsWith("http://") ||
+    url.startsWith("https://") ||
+    url.startsWith("blob:") ||
+    url.startsWith("data:")
+  ) {
+    return url;
+  }
+  return `${BASE_URL.replace(/\/$/, "")}${url.startsWith("/") ? "" : "/"}${url}`;
+}
+
 function normalizeChapter(ch, idx) {
   if (!ch) return null;
   return {
@@ -149,6 +166,15 @@ function normalizeChapter(ch, idx) {
     type: ch.type || "Theory",
     order: ch.order || idx + 1,
     content: ch.content || "",
+    videoUrl: ch.videoUrl || "",
+    materials: Array.isArray(ch.materials)
+      ? ch.materials.map((m) => ({
+          title: m.title || "Study Material",
+          url: m.url || "",
+          type: m.type || "document",
+          size: typeof m.size === "number" ? m.size : 0,
+        }))
+      : [],
   };
 }
 
@@ -162,6 +188,7 @@ function normalizeCourse(c) {
     level: c.level || "Beginner",
     published: c.published !== false,
     price: typeof c.price === "number" ? c.price : 0,
+    thumbnail: c.thumbnail || "",
     createdBy: c.createdBy,
     chapters: (c.chapters || []).map(normalizeChapter).filter(Boolean),
     challenge: (c.challenge || []).map((cl) => ({
@@ -202,6 +229,7 @@ export const httpAdapter = {
       level: courseData.level || "Beginner",
       published: courseData.published !== false,
       price: typeof courseData.price === "number" ? courseData.price : 0,
+      thumbnail: courseData.thumbnail || "",
     };
     const course = await request("/courses", {
       method: "POST",
@@ -248,6 +276,8 @@ export const httpAdapter = {
       preview: Boolean(chapterData.preview),
       type: chapterData.type || "Theory",
       content: chapterData.content || "",
+      videoUrl: chapterData.videoUrl || "",
+      materials: Array.isArray(chapterData.materials) ? chapterData.materials : [],
     };
     if (chapterData.order) payload.order = Number(chapterData.order);
 
@@ -411,5 +441,18 @@ export const httpAdapter = {
   // Analytics
   async getAnalytics() {
     return request("/analytics/overview");
+  },
+
+  // Media & Uploads
+  async uploadFile(file, folder = "materials") {
+    const formData = new FormData();
+    formData.append("file", file);
+    formData.append("folder", folder);
+
+    const data = await request("/uploads", {
+      method: "POST",
+      body: formData,
+    });
+    return data.file;
   },
 };

@@ -101,4 +101,41 @@ describe("Mock Adapter & Data Migration", () => {
     const progress = await mockAdapter.getProgress();
     expect(progress.completedChapters[1]).toContain(1);
   });
+
+  it("handles mock file upload and attaches media to course and chapters", async () => {
+    const file = new File(["dummy pdf content"], "study-notes.pdf", { type: "application/pdf" });
+    const uploaded = await mockAdapter.uploadFile(file);
+
+    expect(uploaded.filename).toContain("study-notes.pdf");
+    expect(uploaded.url).toBeDefined();
+
+    const course = await mockAdapter.createCourse({
+      title: "Audio Engineering",
+      description: "Sound design and acoustics",
+      category: "Audio",
+      level: "Intermediate",
+      thumbnail: "/uploads/audio-thumb.jpg",
+    });
+
+    expect(course.thumbnail).toBe("/uploads/audio-thumb.jpg");
+
+    const chapter = await mockAdapter.addChapter(course.id, {
+      title: "Signal Flow & Gain Staging",
+      duration: 25,
+      preview: true,
+      videoUrl: "/uploads/lesson1.mp4",
+      materials: [
+        {
+          title: "Gain Staging Cheat Sheet",
+          url: uploaded.url,
+          type: "application/pdf",
+          size: 1024,
+        },
+      ],
+    });
+
+    expect(chapter.videoUrl).toBe("/uploads/lesson1.mp4");
+    expect(chapter.materials).toHaveLength(1);
+    expect(chapter.materials[0].title).toBe("Gain Staging Cheat Sheet");
+  });
 });

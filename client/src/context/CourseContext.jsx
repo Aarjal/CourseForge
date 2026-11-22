@@ -198,6 +198,10 @@ export function CourseProvider({ children }) {
     return api.getAnalytics();
   }, []);
 
+  async function uploadFile(file, folder = "materials") {
+    return api.uploadFile(file, folder);
+  }
+
   const value = {
     courses,
     enrolledCourseIds,
@@ -219,6 +223,7 @@ export function CourseProvider({ children }) {
     deleteChapter,
     reorderChapters,
     getAnalytics,
+    uploadFile,
   };
 
   return <CourseContext.Provider value={value}>{children}</CourseContext.Provider>;

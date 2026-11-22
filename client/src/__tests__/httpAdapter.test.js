@@ -126,4 +126,71 @@ describe("HTTP Adapter (/api/v1)", () => {
     expect(localStorage.getItem("courseforge-access-token")).toBe("fresh-access-token");
     expect(callCount).toBe(3);
   });
+
+  it("uploads files via FormData and normalizes media fields", async () => {
+    localStorage.setItem("courseforge-access-token", "valid-token");
+
+    global.fetch = vi.fn().mockImplementation((url, options) => {
+      expect(url).toContain("/api/v1/uploads");
+      expect(options.method).toBe("POST");
+      expect(options.headers.Authorization).toBe("Bearer valid-token");
+      expect(options.headers["Content-Type"]).toBeUndefined(); // Browser sets multipart boundary
+      expect(options.body instanceof FormData).toBe(true);
+
+      return Promise.resolve({
+        ok: true,
+        status: 201,
+        json: async () => ({
+          file: {
+            url: "/uploads/sample-lecture.pdf",
+            filename: "sample-lecture.pdf",
+            size: 51200,
+            mimetype: "application/pdf",
+          },
+        }),
+      });
+    });
+
+    const file = new File(["dummy content"], "lecture.pdf", { type: "application/pdf" });
+    const uploaded = await httpAdapter.uploadFile(file, "documents");
+
+    expect(uploaded.url).toBe("/uploads/sample-lecture.pdf");
+    expect(uploaded.size).toBe(51200);
+  });
+
+  it("preserves thumbnail, videoUrl, and materials during normalization", async () => {
+    global.fetch = vi.fn().mockResolvedValue({
+      ok: true,
+      status: 200,
+      json: async () => ({
+        _id: "c-media",
+        title: "Multimedia Design",
+        description: "Audio & video production",
+        thumbnail: "/uploads/thumb.png",
+        chapters: [
+          {
+            _id: "ch-media-1",
+            title: "Audio Mixing",
+            duration: 30,
+            preview: true,
+            videoUrl: "/uploads/video.mp4",
+            materials: [
+              {
+                title: "Mixing Cheat Sheet",
+                url: "/uploads/cheatsheet.pdf",
+                type: "application/pdf",
+                size: 2048,
+              },
+            ],
+          },
+        ],
+      }),
+    });
+
+    const course = await httpAdapter.getCourseById("c-media");
+    expect(course.thumbnail).toBe("/uploads/thumb.png");
+    expect(course.chapters[0].videoUrl).toBe("/uploads/video.mp4");
+    expect(course.chapters[0].materials).toHaveLength(1);
+    expect(course.chapters[0].materials[0].title).toBe("Mixing Cheat Sheet");
+  });
 });
