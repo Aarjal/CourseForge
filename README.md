@@ -16,6 +16,7 @@ CourseForge is in active development. The frontend currently operates as a stand
 ## About CourseForge
 
 CourseForge is a full-stack e-learning web application where:
+
 - **Instructors / Admins** can structure and publish courses organized into chapters and learning materials.
 - **Students** can browse courses, enroll, access public previews and unlocked lessons, and track their learning progress.
 
@@ -24,6 +25,7 @@ CourseForge is a full-stack e-learning web application where:
 ## App Features
 
 ### Student Side (Current Demo)
+
 - Demo login with mock credentials
 - Browse available course catalog
 - Search courses by title
@@ -34,12 +36,14 @@ CourseForge is a full-stack e-learning web application where:
 - Take an interactive knowledge check quiz
 
 ### Admin Side (Current Demo)
+
 - Create courses with title, category, level, description, and published status
 - Add chapters to existing courses or new course drafts
 - Toggle chapter public preview flags
 - Save courses and chapters to browser storage
 
 ### Planned Features
+
 - Full JWT authentication with separate `student` and `admin` roles
 - Real database persistence via MongoDB & Mongoose
 - Enforced role and locked-content security on the server
@@ -55,9 +59,9 @@ CourseForge is a full-stack e-learning web application where:
 - **Frontend**: React 19, Vite 8
 - **Backend**: Node.js, Express 5, Mongoose 9
 - **Database**: MongoDB Atlas
-- **File Storage**: Cloudinary *(planned)*
-- **Authentication**: JWT & bcrypt *(in progress)*
-- **Deployment**: GitHub Pages *(current client demo)*, Render + Vercel *(planned)*
+- **File Storage**: Cloudinary _(planned)_
+- **Authentication**: JWT & bcrypt _(in progress)_
+- **Deployment**: GitHub Pages _(current client demo)_, Render + Vercel _(planned)_
 
 ---
 
@@ -73,6 +77,7 @@ CourseForge is a full-stack e-learning web application where:
 ## Getting Started
 
 ### Prerequisites
+
 - Node.js (v18 or higher recommended)
 - npm
 - MongoDB Atlas account or local MongoDB instance
@@ -108,6 +113,7 @@ cp .env.example .env
 ```
 
 Edit `server/.env` to configure your MongoDB connection string (`MONGO_URI`) and port if needed:
+
 ```env
 PORT=5000
 MONGO_URI=your_mongodb_connection_string
@@ -133,8 +139,9 @@ npm run dev
 ---
 
 ## Live Demo
+
 [Open GitHub Pages Demo](https://aarjal.github.io/CourseForge/)  
-*(The current demo uses `localStorage`; course data is saved within your active browser).*
+_(The current demo uses `localStorage`; course data is saved within your active browser)._
 
 ---
 
