@@ -90,8 +90,11 @@ button {
 
 .site-name {
   white-space: nowrap;
+  font-weight: 800;
+  color: var(--ink);
   background: linear-gradient(135deg, var(--ink) 0%, var(--green) 100%);
   -webkit-background-clip: text;
+  background-clip: text;
   -webkit-text-fill-color: transparent;
 }
 
@@ -244,15 +247,16 @@ h3 {
 h1 {
   max-width: 760px;
   margin: 0 0 16px;
-  font-size: clamp(40px, 1vw, 70px);
-  line-height: 1.2;
-  letter-spacing: -2px;
+  font-size: clamp(32px, 4vw, 52px);
+  line-height: 1.15;
+  letter-spacing: -0.02em;
 }
 
 h2 {
   margin: 0;
-  font-size: 34px;
-  line-height: 1.1;
+  font-size: clamp(24px, 3vw, 32px);
+  line-height: 1.2;
+  letter-spacing: -0.01em;
 }
 
 h3 {
@@ -1057,17 +1061,18 @@ legend {
   }
 
   .site-name {
-    font-size: 14px;
+    font-size: 15px;
   }
 
   h1,
   .welcome-sec h1 {
-    font-size: 42px;
+    font-size: 28px;
+    line-height: 1.2;
   }
 
   .quiz-callout,
   .course-card-content {
-    padding: 22px;
+    padding: 18px;
   }
 }
 

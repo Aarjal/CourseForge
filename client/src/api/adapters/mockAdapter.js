@@ -7,6 +7,21 @@ const V1_LEGACY_KEY = "courseforge-courses";
 const STATUS_KEY = "course-status";
 const V2_QUIZZES_KEY = "courseforge-quizzes-v1";
 const V2_ATTEMPTS_KEY = "courseforge-quiz-attempts-v1";
+const V2_USERS_KEY = "courseforge-mock-users-v1";
+
+function loadMockUsers() {
+  try {
+    const raw = localStorage.getItem(V2_USERS_KEY);
+    if (raw) return JSON.parse(raw);
+  } catch {}
+  return [];
+}
+
+function saveMockUsers(users) {
+  try {
+    localStorage.setItem(V2_USERS_KEY, JSON.stringify(users));
+  } catch {}
+}
 
 function loadStoredQuizzes() {
   try {
@@ -417,22 +432,55 @@ export const mockAdapter = {
     if (!email || !password) {
       throw new Error("Email and password are required");
     }
-    const userRole = email.includes("admin") ? "admin" : role;
-    const user = { id: Date.now(), name: name || "Student", email, role: userRole };
+    const cleanEmail = email.trim().toLowerCase();
+    const users = loadMockUsers();
+    const existing = users.find((u) => u.email.toLowerCase() === cleanEmail);
+    if (existing) {
+      throw new Error("User with this email already exists");
+    }
+    const userRole = cleanEmail.includes("admin") ? "admin" : role;
+    const displayName = name && name.trim() ? name.trim() : (cleanEmail.split("@")[0] || "Student");
+    const newUser = {
+      id: `usr-${Date.now()}`,
+      name: displayName,
+      email: cleanEmail,
+      password,
+      role: userRole,
+    };
+    users.push(newUser);
+    saveMockUsers(users);
+
+    const publicUser = { id: newUser.id, name: newUser.name, email: newUser.email, role: newUser.role };
     const status = getStoredStatus();
-    saveStoredStatus({ ...status, loggedin: true, user });
-    return { user, token: "mock-jwt-token" };
+    saveStoredStatus({ ...status, loggedin: true, user: publicUser });
+    return { user: publicUser, token: "mock-jwt-token" };
   },
 
   async login({ email, password }) {
     if (!email || !password) {
       throw new Error("Email and password are required");
     }
-    const role = email.includes("admin") ? "admin" : "student";
-    const user = { email, role };
+    const cleanEmail = email.trim().toLowerCase();
+    const users = loadMockUsers();
+    let found = users.find((u) => u.email.toLowerCase() === cleanEmail);
+
+    if (found) {
+      if (found.password && found.password !== password) {
+        throw new Error("Invalid email or password");
+      }
+    } else {
+      const role = cleanEmail.includes("admin") ? "admin" : "student";
+      const rawPrefix = cleanEmail.split("@")[0] || "Student";
+      const displayName = rawPrefix.charAt(0).toUpperCase() + rawPrefix.slice(1);
+      found = { id: `usr-${Date.now()}`, name: displayName, email: cleanEmail, password, role };
+      users.push(found);
+      saveMockUsers(users);
+    }
+
+    const publicUser = { id: found.id, name: found.name, email: found.email, role: found.role };
     const status = getStoredStatus();
-    saveStoredStatus({ ...status, loggedin: true, user });
-    return { user, token: "mock-jwt-token" };
+    saveStoredStatus({ ...status, loggedin: true, user: publicUser });
+    return { user: publicUser, token: "mock-jwt-token" };
   },
 
   async logout() {
