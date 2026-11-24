@@ -83,13 +83,33 @@ export function CourseProvider({ children }) {
     return Math.round((completedCount / course.chapters.length) * 100);
   }
 
-  async function submitQuiz(answers) {
-    const result = await api.submitQuiz(answers);
-    if (result.passed) {
+  async function submitQuiz(courseIdOrAnswers, maybeAnswers) {
+    const result = await api.submitQuiz(courseIdOrAnswers, maybeAnswers);
+    if (result && result.passed) {
       setQuizDone(true);
     }
-    return result.score;
+    return result;
   }
+
+  const getQuizByCourse = useCallback(async (courseId) => {
+    return api.getQuizByCourse(courseId);
+  }, []);
+
+  const createQuiz = useCallback(async (courseId, quizData) => {
+    return api.createQuiz(courseId, quizData);
+  }, []);
+
+  const updateQuiz = useCallback(async (courseId, quizData) => {
+    return api.updateQuiz(courseId, quizData);
+  }, []);
+
+  const deleteQuiz = useCallback(async (courseId) => {
+    return api.deleteQuiz(courseId);
+  }, []);
+
+  const getQuizAttempts = useCallback(async (courseId) => {
+    return api.getQuizAttempts(courseId);
+  }, []);
 
   async function addCourse(courseData) {
     const created = await api.createCourse(courseData);
@@ -214,6 +234,11 @@ export function CourseProvider({ children }) {
     completeChapter,
     calculateProgress,
     submitQuiz,
+    getQuizByCourse,
+    createQuiz,
+    updateQuiz,
+    deleteQuiz,
+    getQuizAttempts,
     addCourse,
     updateCourse,
     deleteCourse,

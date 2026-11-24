@@ -419,7 +419,63 @@ export const httpAdapter = {
     }
   },
 
-  async submitQuiz(answers) {
+  async getQuizByCourse(courseId) {
+    if (!courseId) return null;
+    try {
+      return await request(`/courses/${courseId}/quiz`);
+    } catch (err) {
+      if (err.status === 404) return null;
+      throw err;
+    }
+  },
+
+  async createQuiz(courseId, quizData) {
+    return request(`/courses/${courseId}/quiz`, {
+      method: "POST",
+      body: JSON.stringify(quizData),
+    });
+  },
+
+  async updateQuiz(courseId, quizData) {
+    return request(`/courses/${courseId}/quiz`, {
+      method: "PUT",
+      body: JSON.stringify(quizData),
+    });
+  },
+
+  async deleteQuiz(courseId) {
+    return request(`/courses/${courseId}/quiz`, {
+      method: "DELETE",
+    });
+  },
+
+  async getQuizAttempts(courseId) {
+    try {
+      return await request(`/courses/${courseId}/quiz/attempts`);
+    } catch {
+      return [];
+    }
+  },
+
+  async submitQuiz(courseIdOrAnswers, maybeAnswers) {
+    let courseId = null;
+    let answers = courseIdOrAnswers;
+    if (maybeAnswers !== undefined) {
+      courseId = courseIdOrAnswers;
+      answers = maybeAnswers;
+    }
+
+    if (courseId) {
+      try {
+        return await request(`/courses/${courseId}/quiz/submit`, {
+          method: "POST",
+          body: JSON.stringify({ answers }),
+        });
+      } catch (err) {
+        console.warn("Course quiz submission failed, attempting fallback:", err.message);
+      }
+    }
+
     try {
       return await request("/quizzes/submit", {
         method: "POST",
@@ -428,12 +484,27 @@ export const httpAdapter = {
     } catch {
       let score = 0;
       DEFAULT_QUIZ_QUESTIONS.forEach((q, index) => {
-        if (Number(answers[index]) === q.ans) score++;
+        const sel = Array.isArray(answers) ? answers[index] : answers[index] ?? answers[String(index)];
+        if (Number(sel) === q.ans) score++;
       });
+      const passed = score >= Math.ceil(DEFAULT_QUIZ_QUESTIONS.length * 0.8);
       return {
+        message: passed ? "Congratulations, you passed the quiz!" : "Quiz completed. You did not meet the passing score.",
         score,
+        totalQuestions: DEFAULT_QUIZ_QUESTIONS.length,
         total: DEFAULT_QUIZ_QUESTIONS.length,
-        passed: score === DEFAULT_QUIZ_QUESTIONS.length,
+        percentage: Math.round((score / DEFAULT_QUIZ_QUESTIONS.length) * 100),
+        passed,
+        results: DEFAULT_QUIZ_QUESTIONS.map((q, idx) => {
+          const sel = Number(Array.isArray(answers) ? answers[idx] : answers[idx] ?? answers[String(idx)]);
+          return {
+            questionIndex: idx,
+            selectedOption: sel,
+            isCorrect: sel === q.ans,
+            correctAnswer: q.ans,
+            explanation: q.explanation || "Standard answer.",
+          };
+        }),
       };
     }
   },

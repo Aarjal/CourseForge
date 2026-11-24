@@ -5,6 +5,58 @@ import {
 const V2_COURSES_KEY = "courseforge-courses-v2";
 const V1_LEGACY_KEY = "courseforge-courses";
 const STATUS_KEY = "course-status";
+const V2_QUIZZES_KEY = "courseforge-quizzes-v1";
+const V2_ATTEMPTS_KEY = "courseforge-quiz-attempts-v1";
+
+function loadStoredQuizzes() {
+  try {
+    const raw = localStorage.getItem(V2_QUIZZES_KEY);
+    if (raw) return JSON.parse(raw);
+  } catch {}
+  return [];
+}
+
+function saveStoredQuizzes(quizzes) {
+  try {
+    localStorage.setItem(V2_QUIZZES_KEY, JSON.stringify(quizzes));
+  } catch {}
+}
+
+function loadStoredAttempts() {
+  try {
+    const raw = localStorage.getItem(V2_ATTEMPTS_KEY);
+    if (raw) return JSON.parse(raw);
+  } catch {}
+  return [];
+}
+
+function saveStoredAttempts(attempts) {
+  try {
+    localStorage.setItem(V2_ATTEMPTS_KEY, JSON.stringify(attempts));
+  } catch {}
+}
+
+function getDefaultQuizForCourse(courseId) {
+  return {
+    id: `quiz-${courseId}`,
+    course: String(courseId),
+    title: "Web Development Basics Quiz",
+    description: "Test your comprehension of HTML, CSS, JavaScript, and web fundamentals.",
+    passingScore: 80,
+    questions: DEFAULT_QUIZ_QUESTIONS.map((q, idx) => ({
+      id: `q-${idx + 1}`,
+      question: q.question,
+      options: q.options,
+      correctAnswer: q.ans,
+      explanation:
+        q.ans === 0
+          ? "HTML is the standard markup language for creating web page structure."
+          : q.ans === 2
+          ? "JavaScript provides dynamic, interactive scripting in the browser."
+          : "CSS handles layout and visual styling.",
+    })),
+  };
+}
 
 export const STANDARDIZED_DEFAULT_COURSES = [
   {
@@ -446,20 +498,170 @@ export const mockAdapter = {
     return DEFAULT_QUIZ_QUESTIONS;
   },
 
-  async submitQuiz(answers) {
-    let score = 0;
-    DEFAULT_QUIZ_QUESTIONS.forEach((q, index) => {
-      if (Number(answers[index]) === q.ans) {
-        score++;
+  async getQuizByCourse(courseId) {
+    if (!courseId) return null;
+    const quizzes = loadStoredQuizzes();
+    let found = quizzes.find((q) => String(q.course) === String(courseId));
+    if (!found && String(courseId) === "1") {
+      found = getDefaultQuizForCourse("1");
+      quizzes.push(found);
+      saveStoredQuizzes(quizzes);
+    }
+    return found || null;
+  },
+
+  async createQuiz(courseId, quizData) {
+    const quizzes = loadStoredQuizzes();
+    const existingIndex = quizzes.findIndex((q) => String(q.course) === String(courseId));
+    const newQuiz = {
+      id: `quiz-${courseId}-${Date.now()}`,
+      course: String(courseId),
+      title: quizData.title || "Course Assessment",
+      description: quizData.description || "",
+      passingScore: quizData.passingScore || 80,
+      questions: (quizData.questions || []).map((q, idx) => ({
+        id: q.id || `q-${idx + 1}`,
+        question: q.question,
+        options: q.options || [],
+        correctAnswer: q.correctAnswer !== undefined ? Number(q.correctAnswer) : 0,
+        explanation: q.explanation || "",
+      })),
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+    };
+    if (existingIndex >= 0) {
+      quizzes[existingIndex] = newQuiz;
+    } else {
+      quizzes.push(newQuiz);
+    }
+    saveStoredQuizzes(quizzes);
+    return newQuiz;
+  },
+
+  async updateQuiz(courseId, quizData) {
+    const quizzes = loadStoredQuizzes();
+    let index = quizzes.findIndex((q) => String(q.course) === String(courseId));
+    if (index === -1) {
+      if (String(courseId) === "1") {
+        quizzes.push(getDefaultQuizForCourse("1"));
+        index = quizzes.length - 1;
+      } else {
+        const error = new Error("No quiz found for this course");
+        error.status = 404;
+        throw error;
       }
+    }
+    const current = quizzes[index];
+    const updated = {
+      ...current,
+      title: quizData.title ?? current.title,
+      description: quizData.description ?? current.description,
+      passingScore: quizData.passingScore ?? current.passingScore,
+      questions: quizData.questions
+        ? quizData.questions.map((q, idx) => ({
+            id: q.id || `q-${idx + 1}`,
+            question: q.question,
+            options: q.options || [],
+            correctAnswer: q.correctAnswer !== undefined ? Number(q.correctAnswer) : 0,
+            explanation: q.explanation || "",
+          }))
+        : current.questions,
+      updatedAt: new Date().toISOString(),
+    };
+    quizzes[index] = updated;
+    saveStoredQuizzes(quizzes);
+    return updated;
+  },
+
+  async deleteQuiz(courseId) {
+    const quizzes = loadStoredQuizzes();
+    const filtered = quizzes.filter((q) => String(q.course) !== String(courseId));
+    saveStoredQuizzes(filtered);
+    return { success: true, message: "Quiz deleted successfully" };
+  },
+
+  async getQuizAttempts(courseId) {
+    const attempts = loadStoredAttempts();
+    return attempts.filter((a) => String(a.course) === String(courseId));
+  },
+
+  async submitQuiz(courseIdOrAnswers, maybeAnswers) {
+    let courseId = null;
+    let rawAnswers = courseIdOrAnswers;
+    if (maybeAnswers !== undefined) {
+      courseId = courseIdOrAnswers;
+      rawAnswers = maybeAnswers;
+    }
+
+    let quiz = null;
+    if (courseId) {
+      quiz = await this.getQuizByCourse(courseId);
+    }
+
+    const questions = quiz
+      ? quiz.questions
+      : DEFAULT_QUIZ_QUESTIONS.map((q) => ({
+          question: q.question,
+          options: q.options,
+          correctAnswer: q.ans,
+          explanation: q.explanation || "",
+        }));
+    const passingScore = quiz ? quiz.passingScore || 80 : 80;
+
+    let score = 0;
+    const totalQuestions = questions.length;
+    const answersDetail = questions.map((q, idx) => {
+      let selected;
+      if (Array.isArray(rawAnswers)) {
+        selected = rawAnswers[idx];
+      } else if (rawAnswers && typeof rawAnswers === "object") {
+        selected = rawAnswers[idx] !== undefined ? rawAnswers[idx] : rawAnswers[String(idx)];
+      }
+      const selectedIndex = selected !== undefined && selected !== null ? Number(selected) : -1;
+      const isCorrect = selectedIndex === (q.correctAnswer ?? q.ans);
+      if (isCorrect) score++;
+      return {
+        questionIndex: idx,
+        selectedOption: selectedIndex,
+        isCorrect,
+        correctAnswer: q.correctAnswer ?? q.ans,
+        explanation: q.explanation || "",
+      };
     });
 
-    const status = getStoredStatus();
-    if (score === DEFAULT_QUIZ_QUESTIONS.length) {
+    const percentage = totalQuestions > 0 ? Math.round((score / totalQuestions) * 100) : 0;
+    const passed = percentage >= passingScore;
+
+    if (passed) {
+      const status = getStoredStatus();
       saveStoredStatus({ ...status, quiz_done: true });
     }
 
-    return { score, total: DEFAULT_QUIZ_QUESTIONS.length, passed: score === DEFAULT_QUIZ_QUESTIONS.length };
+    const attempt = {
+      id: `att-${Date.now()}`,
+      course: courseId ? String(courseId) : null,
+      score,
+      totalQuestions,
+      percentage,
+      passed,
+      createdAt: new Date().toISOString(),
+    };
+    const attempts = loadStoredAttempts();
+    attempts.unshift(attempt);
+    saveStoredAttempts(attempts);
+
+    return {
+      message: passed
+        ? "Congratulations, you passed the quiz!"
+        : "Quiz completed. You did not meet the passing score.",
+      score,
+      totalQuestions,
+      total: totalQuestions,
+      percentage,
+      passed,
+      attemptId: attempt.id,
+      results: answersDetail,
+    };
   },
 
   // Analytics
