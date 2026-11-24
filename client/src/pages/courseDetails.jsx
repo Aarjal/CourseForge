@@ -267,10 +267,10 @@ function CourseDetails() {
                 <p className="eye">Test Your Knowledge</p>
                 <h2>Take the Quiz for what you&apos;ve learned</h2>
                 <p className="muted">
-                  Complete a short quiz to test your comprehension of this course.
+                  Complete the course assessment to test your comprehension and earn completion.
                 </p>
               </div>
-              <Link className="secondary-button" to="/quiz">
+              <Link className="secondary-button" to={`/quiz?courseId=${course.id}`}>
                 Take Quiz
               </Link>
             </section>

@@ -193,4 +193,45 @@ describe("HTTP Adapter (/api/v1)", () => {
     expect(course.chapters[0].materials).toHaveLength(1);
     expect(course.chapters[0].materials[0].title).toBe("Mixing Cheat Sheet");
   });
+
+  it("interacts with quiz endpoints: fetch, create, and submit", async () => {
+    // 1. getQuizByCourse
+    global.fetch = vi.fn().mockResolvedValueOnce({
+      ok: true,
+      status: 200,
+      json: async () => ({
+        _id: "quiz-1",
+        course: "c-123",
+        title: "Architecture Assessment",
+        passingScore: 80,
+        questions: [{ question: "What is React?", options: ["Library", "Language"] }],
+      }),
+    });
+
+    const quiz = await httpAdapter.getQuizByCourse("c-123");
+    expect(quiz.title).toBe("Architecture Assessment");
+    expect(global.fetch).toHaveBeenCalledWith(
+      expect.stringContaining("/courses/c-123/quiz"),
+      expect.any(Object)
+    );
+
+    // 2. submitQuiz
+    global.fetch = vi.fn().mockResolvedValueOnce({
+      ok: true,
+      status: 200,
+      json: async () => ({
+        score: 1,
+        totalQuestions: 1,
+        percentage: 100,
+        passed: true,
+        results: [
+          { questionIndex: 0, selectedOption: 0, isCorrect: true, correctAnswer: 0, explanation: "UI library" },
+        ],
+      }),
+    });
+
+    const submitResult = await httpAdapter.submitQuiz("c-123", { 0: 0 });
+    expect(submitResult.passed).toBe(true);
+    expect(submitResult.percentage).toBe(100);
+  });
 });

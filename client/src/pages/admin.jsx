@@ -16,6 +16,10 @@ function Admin() {
     reorderChapters,
     getAnalytics,
     uploadFile,
+    getQuizByCourse,
+    createQuiz,
+    updateQuiz,
+    deleteQuiz,
   } = useCourses();
 
   const [activeTab, setActiveTab] = useState("manage"); // 'manage' | 'create' | 'analytics'
@@ -56,6 +60,24 @@ function Admin() {
   const [analyticsData, setAnalyticsData] = useState(null);
   const [analyticsLoading, setAnalyticsLoading] = useState(false);
 
+  // Quiz Builder state
+  const [selectedQuizCourseId, setSelectedQuizCourseId] = useState("");
+  const [quizFormLoading, setQuizFormLoading] = useState(false);
+  const [existingQuizId, setExistingQuizId] = useState(null);
+  const [quizForm, setQuizForm] = useState({
+    title: "",
+    description: "",
+    passingScore: 80,
+    questions: [
+      {
+        question: "",
+        options: ["", "", "", ""],
+        correctAnswer: 0,
+        explanation: "",
+      },
+    ],
+  });
+
   useEffect(() => {
     if (activeTab === "analytics") {
       let isCancelled = false;
@@ -82,6 +104,76 @@ function Admin() {
       };
     }
   }, [activeTab, getAnalytics]);
+
+  useEffect(() => {
+    if (activeTab === "quiz" && courses.length > 0 && !selectedQuizCourseId) {
+      setSelectedQuizCourseId(String(courses[0].id));
+    }
+  }, [activeTab, courses, selectedQuizCourseId]);
+
+  useEffect(() => {
+    let isCancelled = false;
+
+    async function loadQuizForCourse() {
+      if (!selectedQuizCourseId) return;
+      setQuizFormLoading(true);
+      try {
+        const found = await getQuizByCourse(selectedQuizCourseId);
+        if (isCancelled) return;
+        if (found && found.questions && found.questions.length > 0) {
+          setExistingQuizId(found._id || found.id);
+          setQuizForm({
+            title: found.title || "",
+            description: found.description || "",
+            passingScore: found.passingScore || 80,
+            questions: found.questions.map((q) => ({
+              question: q.question,
+              options:
+                Array.isArray(q.options) && q.options.length >= 2
+                  ? q.options
+                  : ["", "", "", ""],
+              correctAnswer: q.correctAnswer !== undefined ? q.correctAnswer : 0,
+              explanation: q.explanation || "",
+            })),
+          });
+        } else {
+          setExistingQuizId(null);
+          const currentCourse = courses.find(
+            (c) => String(c.id) === String(selectedQuizCourseId)
+          );
+          setQuizForm({
+            title: currentCourse ? `${currentCourse.title} Assessment` : "Course Assessment",
+            description: "Test your comprehension of the core concepts covered in this course.",
+            passingScore: 80,
+            questions: [
+              {
+                question: "",
+                options: ["", "", "", ""],
+                correctAnswer: 0,
+                explanation: "",
+              },
+            ],
+          });
+        }
+      } catch (err) {
+        if (!isCancelled) {
+          setErrorMessage(err.message || "Failed to load quiz");
+        }
+      } finally {
+        if (!isCancelled) {
+          setQuizFormLoading(false);
+        }
+      }
+    }
+
+    if (activeTab === "quiz") {
+      loadQuizForCourse();
+    }
+
+    return () => {
+      isCancelled = true;
+    };
+  }, [activeTab, selectedQuizCourseId, getQuizByCourse, courses]);
 
   function showSuccess(msg) {
     setMessage(msg);
@@ -360,6 +452,162 @@ function Admin() {
     }
   }
 
+  // --- Handlers: Quiz Builder ---
+  function handleQuizFieldChange(name, value) {
+    setQuizForm((prev) => ({
+      ...prev,
+      [name]: name === "passingScore" ? Number(value) : value,
+    }));
+  }
+
+  function handleQuestionTextChange(qIndex, text) {
+    setQuizForm((prev) => {
+      const updatedQuestions = [...prev.questions];
+      updatedQuestions[qIndex] = { ...updatedQuestions[qIndex], question: text };
+      return { ...prev, questions: updatedQuestions };
+    });
+  }
+
+  function handleOptionChange(qIndex, optIndex, text) {
+    setQuizForm((prev) => {
+      const updatedQuestions = [...prev.questions];
+      const updatedOptions = [...(updatedQuestions[qIndex].options || [])];
+      updatedOptions[optIndex] = text;
+      updatedQuestions[qIndex] = { ...updatedQuestions[qIndex], options: updatedOptions };
+      return { ...prev, questions: updatedQuestions };
+    });
+  }
+
+  function handleCorrectAnswerChange(qIndex, correctOptIndex) {
+    setQuizForm((prev) => {
+      const updatedQuestions = [...prev.questions];
+      updatedQuestions[qIndex] = {
+        ...updatedQuestions[qIndex],
+        correctAnswer: Number(correctOptIndex),
+      };
+      return { ...prev, questions: updatedQuestions };
+    });
+  }
+
+  function handleExplanationChange(qIndex, text) {
+    setQuizForm((prev) => {
+      const updatedQuestions = [...prev.questions];
+      updatedQuestions[qIndex] = { ...updatedQuestions[qIndex], explanation: text };
+      return { ...prev, questions: updatedQuestions };
+    });
+  }
+
+  function handleAddQuestion() {
+    setQuizForm((prev) => ({
+      ...prev,
+      questions: [
+        ...prev.questions,
+        {
+          question: "",
+          options: ["", "", "", ""],
+          correctAnswer: 0,
+          explanation: "",
+        },
+      ],
+    }));
+  }
+
+  function handleRemoveQuestion(qIndex) {
+    if (quizForm.questions.length <= 1) {
+      showError("A quiz must contain at least one question.");
+      return;
+    }
+    setQuizForm((prev) => ({
+      ...prev,
+      questions: prev.questions.filter((_, idx) => idx !== qIndex),
+    }));
+  }
+
+  async function handleSaveQuiz(e) {
+    e.preventDefault();
+    if (!selectedQuizCourseId) {
+      showError("Please select a course for this quiz.");
+      return;
+    }
+
+    if (!quizForm.title || !quizForm.title.trim()) {
+      showError("Quiz title is required.");
+      return;
+    }
+
+    for (let i = 0; i < quizForm.questions.length; i++) {
+      const q = quizForm.questions[i];
+      if (!q.question || !q.question.trim() || q.question.trim().length < 3) {
+        showError(`Question ${i + 1} must be at least 3 characters long.`);
+        return;
+      }
+      const validOptions = (q.options || []).filter((opt) => opt && opt.trim().length > 0);
+      if (validOptions.length < 2) {
+        showError(`Question ${i + 1} must have at least 2 non-empty options.`);
+        return;
+      }
+      if (q.correctAnswer < 0 || q.correctAnswer >= q.options.length) {
+        showError(`Question ${i + 1} must have a valid selected correct answer.`);
+        return;
+      }
+    }
+
+    try {
+      const payload = {
+        title: quizForm.title.trim(),
+        description: quizForm.description ? quizForm.description.trim() : "",
+        passingScore: quizForm.passingScore || 80,
+        questions: quizForm.questions.map((q) => ({
+          question: q.question.trim(),
+          options: q.options.filter((opt) => opt && opt.trim().length > 0),
+          correctAnswer: q.correctAnswer,
+          explanation: q.explanation ? q.explanation.trim() : "",
+        })),
+      };
+
+      if (existingQuizId) {
+        const updated = await updateQuiz(selectedQuizCourseId, payload);
+        setExistingQuizId(updated._id || updated.id || existingQuizId);
+        showSuccess("Quiz assessment updated successfully.");
+      } else {
+        const created = await createQuiz(selectedQuizCourseId, payload);
+        setExistingQuizId(created._id || created.id);
+        showSuccess("Quiz assessment created and published successfully.");
+      }
+    } catch (err) {
+      showError(err.message || "Failed to save quiz");
+    }
+  }
+
+  async function handleDeleteQuiz() {
+    if (!selectedQuizCourseId) return;
+    if (!window.confirm("Are you sure you want to delete this quiz assessment?")) return;
+
+    try {
+      await deleteQuiz(selectedQuizCourseId);
+      setExistingQuizId(null);
+      const currentCourse = courses.find(
+        (c) => String(c.id) === String(selectedQuizCourseId)
+      );
+      setQuizForm({
+        title: currentCourse ? `${currentCourse.title} Assessment` : "Course Assessment",
+        description: "",
+        passingScore: 80,
+        questions: [
+          {
+            question: "",
+            options: ["", "", "", ""],
+            correctAnswer: 0,
+            explanation: "",
+          },
+        ],
+      });
+      showSuccess("Quiz deleted successfully.");
+    } catch (err) {
+      showError(err.message || "Failed to delete quiz");
+    }
+  }
+
   return (
     <div className="app-shell">
       <Navbar />
@@ -395,6 +643,13 @@ function Admin() {
               type="button"
             >
               ➕ Create Course
+            </button>
+            <button
+              className={`admin-tab-button ${activeTab === "quiz" ? "active" : ""}`}
+              onClick={() => setActiveTab("quiz")}
+              type="button"
+            >
+              📝 Quiz Builder
             </button>
             <button
               className={`admin-tab-button ${activeTab === "analytics" ? "active" : ""}`}
@@ -568,6 +823,16 @@ function Admin() {
                                 type="button"
                               >
                                 📑 {isExpanded ? "Hide Chapters" : "Chapters"}
+                              </button>
+                              <button
+                                className="admin-small-button"
+                                onClick={() => {
+                                  setSelectedQuizCourseId(String(course.id));
+                                  setActiveTab("quiz");
+                                }}
+                                type="button"
+                              >
+                                📝 Quiz
                               </button>
                               <button
                                 className="admin-small-button danger"
@@ -1007,6 +1272,259 @@ function Admin() {
                 </div>
               ) : (
                 <p className="muted">No analytics data available.</p>
+              )}
+            </div>
+          )}
+
+          {/* ================= TAB 4: QUIZ BUILDER ================= */}
+          {activeTab === "quiz" && (
+            <div className="quiz-builder-panel">
+              {courses.length === 0 ? (
+                <div className="empty-state">
+                  <h3>No courses available</h3>
+                  <p>Create a course first before authoring quiz assessments.</p>
+                </div>
+              ) : (
+                <>
+                  <div className="quiz-builder-header">
+                    <div>
+                      <h3 style={{ margin: "0 0 4px" }}>Quiz Assessment Editor</h3>
+                      <p className="muted" style={{ margin: 0 }}>
+                        Author questions, configure options, set answer explanations, and define passing thresholds.
+                      </p>
+                    </div>
+
+                    <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+                      <label style={{ fontWeight: 700, fontSize: "14px", margin: 0 }}>
+                        Select Course:
+                      </label>
+                      <select
+                        onChange={(e) => setSelectedQuizCourseId(e.target.value)}
+                        style={{
+                          padding: "8px 12px",
+                          borderRadius: "4px",
+                          border: "1px solid var(--line)",
+                          background: "var(--paper)",
+                          color: "var(--ink)",
+                          fontWeight: 600,
+                        }}
+                        value={selectedQuizCourseId}
+                      >
+                        {courses.map((c) => (
+                          <option key={c.id} value={c.id}>
+                            {c.title}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+                  </div>
+
+                  {quizFormLoading ? (
+                    <div style={{ padding: "30px", textAlign: "center" }}>
+                      <p className="muted">Loading quiz details...</p>
+                    </div>
+                  ) : (
+                    <form className="admin-form" onSubmit={handleSaveQuiz}>
+                      <div style={{ display: "grid", gap: "16px" }}>
+                        <label>
+                          Quiz Title
+                          <input
+                            onChange={(e) => handleQuizFieldChange("title", e.target.value)}
+                            placeholder="e.g. Fullstack React & Node Assessment"
+                            required
+                            type="text"
+                            value={quizForm.title}
+                          />
+                        </label>
+
+                        <label>
+                          Description
+                          <textarea
+                            onChange={(e) =>
+                              handleQuizFieldChange("description", e.target.value)
+                            }
+                            placeholder="Explain the purpose of this knowledge check..."
+                            rows={3}
+                            value={quizForm.description}
+                          />
+                        </label>
+
+                        <label style={{ maxWidth: "260px" }}>
+                          Passing Score Requirement (%)
+                          <input
+                            max="100"
+                            min="1"
+                            onChange={(e) =>
+                              handleQuizFieldChange("passingScore", e.target.value)
+                            }
+                            required
+                            type="number"
+                            value={quizForm.passingScore}
+                          />
+                        </label>
+                      </div>
+
+                      <hr style={{ margin: "24px 0" }} />
+
+                      <div
+                        style={{
+                          display: "flex",
+                          justifyContent: "space-between",
+                          alignItems: "center",
+                          marginBottom: "16px",
+                        }}
+                      >
+                        <h3 style={{ margin: 0 }}>
+                          Questions ({quizForm.questions.length})
+                        </h3>
+                        <button
+                          className="admin-small-button"
+                          onClick={handleAddQuestion}
+                          type="button"
+                        >
+                          ➕ Add Question
+                        </button>
+                      </div>
+
+                      <div style={{ display: "grid", gap: "20px" }}>
+                        {quizForm.questions.map((q, qIdx) => (
+                          <div className="quiz-builder-question-card" key={qIdx}>
+                            <div
+                              style={{
+                                display: "flex",
+                                justifyContent: "space-between",
+                                alignItems: "center",
+                              }}
+                            >
+                              <h4 style={{ margin: 0 }}>Question {qIdx + 1}</h4>
+                              {quizForm.questions.length > 1 && (
+                                <button
+                                  className="admin-small-button danger"
+                                  onClick={() => handleRemoveQuestion(qIdx)}
+                                  type="button"
+                                >
+                                  Remove
+                                </button>
+                              )}
+                            </div>
+
+                            <label>
+                              Question Prompt
+                              <input
+                                onChange={(e) =>
+                                  handleQuestionTextChange(qIdx, e.target.value)
+                                }
+                                placeholder="Enter question prompt..."
+                                required
+                                type="text"
+                                value={q.question}
+                              />
+                            </label>
+
+                            <div>
+                              <p
+                                style={{
+                                  fontSize: "13px",
+                                  fontWeight: "700",
+                                  marginBottom: "8px",
+                                }}
+                              >
+                                Options (Select radio for correct answer)
+                              </p>
+                              <div style={{ display: "grid", gap: "10px" }}>
+                                {q.options.map((opt, optIdx) => (
+                                  <div
+                                    className="quiz-builder-option-row"
+                                    key={optIdx}
+                                  >
+                                    <input
+                                      checked={q.correctAnswer === optIdx}
+                                      name={`correct-q-${qIdx}`}
+                                      onChange={() =>
+                                        handleCorrectAnswerChange(qIdx, optIdx)
+                                      }
+                                      title="Mark as correct answer"
+                                      type="radio"
+                                    />
+                                    <input
+                                      onChange={(e) =>
+                                        handleOptionChange(qIdx, optIdx, e.target.value)
+                                      }
+                                      placeholder={`Option ${optIdx + 1}${
+                                        optIdx < 2 ? " (Required)" : ""
+                                      }`}
+                                      style={{
+                                        borderColor:
+                                          q.correctAnswer === optIdx
+                                            ? "var(--green)"
+                                            : undefined,
+                                        background:
+                                          q.correctAnswer === optIdx
+                                            ? "var(--green-soft)"
+                                            : undefined,
+                                      }}
+                                      type="text"
+                                      value={opt}
+                                    />
+                                    {q.correctAnswer === optIdx && (
+                                      <span
+                                        style={{
+                                          fontSize: "12px",
+                                          color: "var(--green)",
+                                          fontWeight: 700,
+                                          whiteSpace: "nowrap",
+                                        }}
+                                      >
+                                        ✓ Correct
+                                      </span>
+                                    )}
+                                  </div>
+                                ))}
+                              </div>
+                            </div>
+
+                            <label>
+                              Answer Explanation
+                              <input
+                                onChange={(e) =>
+                                  handleExplanationChange(qIdx, e.target.value)
+                                }
+                                placeholder="Explain why the selected option is correct (shown to students upon submission)..."
+                                type="text"
+                                value={q.explanation}
+                              />
+                            </label>
+                          </div>
+                        ))}
+                      </div>
+
+                      <div className="quiz-builder-actions">
+                        <button className="primary-button" type="submit">
+                          {existingQuizId ? "💾 Update Quiz" : "🚀 Publish Quiz"}
+                        </button>
+
+                        <button
+                          className="admin-small-button"
+                          onClick={handleAddQuestion}
+                          type="button"
+                        >
+                          ➕ Add Another Question
+                        </button>
+
+                        {existingQuizId && (
+                          <button
+                            className="admin-small-button danger"
+                            onClick={handleDeleteQuiz}
+                            style={{ marginLeft: "auto" }}
+                            type="button"
+                          >
+                            🗑️ Delete Quiz
+                          </button>
+                        )}
+                      </div>
+                    </form>
+                  )}
+                </>
               )}
             </div>
           )}

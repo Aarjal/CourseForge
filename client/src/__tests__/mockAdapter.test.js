@@ -138,4 +138,42 @@ describe("Mock Adapter & Data Migration", () => {
     expect(chapter.materials).toHaveLength(1);
     expect(chapter.materials[0].title).toBe("Gain Staging Cheat Sheet");
   });
+
+  it("handles mock quiz creation, retrieval, and scored submission", async () => {
+    // 1. Get default quiz for course 1
+    const quiz1 = await mockAdapter.getQuizByCourse("1");
+    expect(quiz1).toBeDefined();
+    expect(quiz1.questions.length).toBeGreaterThan(0);
+
+    // 2. Create custom quiz for course 99
+    const created = await mockAdapter.createQuiz("99", {
+      title: "Algorithms Quiz",
+      description: "Big-O and structures",
+      passingScore: 75,
+      questions: [
+        {
+          question: "What is binary search complexity?",
+          options: ["O(n)", "O(log n)", "O(1)"],
+          correctAnswer: 1,
+          explanation: "Halves search space each step.",
+        },
+      ],
+    });
+    expect(created.title).toBe("Algorithms Quiz");
+
+    // 3. Retrieve created quiz
+    const fetched = await mockAdapter.getQuizByCourse("99");
+    expect(fetched.title).toBe("Algorithms Quiz");
+
+    // 4. Submit correct answer
+    const submitResult = await mockAdapter.submitQuiz("99", { 0: 1 });
+    expect(submitResult.passed).toBe(true);
+    expect(submitResult.score).toBe(1);
+    expect(submitResult.percentage).toBe(100);
+
+    // 5. Verify attempts recorded
+    const attempts = await mockAdapter.getQuizAttempts("99");
+    expect(attempts.length).toBeGreaterThanOrEqual(1);
+    expect(attempts[0].passed).toBe(true);
+  });
 });
