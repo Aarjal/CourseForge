@@ -10,6 +10,8 @@ const enrollmentRoutes = require("./routes/enrollmentRoutes");
 const progressRoutes = require("./routes/progressRoutes");
 const analyticsRoutes = require("./routes/analyticsRoutes");
 const uploadRoutes = require("./routes/uploadRoutes");
+const quizRoutes = require("./routes/quizRoutes");
+const quizFlatRoutes = require("./routes/quizFlatRoutes");
 const errorHandler = require("./middleware/errorHandler");
 
 const app = express();
@@ -56,6 +58,8 @@ app.use("/api/v1/progress", progressRoutes);
 app.use("/api/v1/analytics", analyticsRoutes);
 app.use("/api/v1/courses", courseRoutes);
 app.use("/api/v1/courses/:course_id/chapters", chapterRoutes);
+app.use("/api/v1/courses/:courseId/quiz", quizRoutes);
+app.use("/api/v1/quizzes", quizFlatRoutes);
 app.use("/api/v1/chapters", chapterFlatRoutes);
 
 // Backward-compatible alias for existing endpoints
@@ -66,6 +70,8 @@ app.use("/api/progress", progressRoutes);
 app.use("/api/analytics", analyticsRoutes);
 app.use("/api/courses", courseRoutes);
 app.use("/api/courses/:course_id/chapters", chapterRoutes);
+app.use("/api/courses/:courseId/quiz", quizRoutes);
+app.use("/api/quizzes", quizFlatRoutes);
 app.use("/api/chapters", chapterFlatRoutes);
 
 // Central Error Handling Middleware (must be after all routes)

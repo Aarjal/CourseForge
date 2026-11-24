@@ -35,6 +35,10 @@ const progressSchema = new mongoose.Schema(
     completedAt: {
       type: Date,
     },
+    quizDone: {
+      type: Boolean,
+      default: false,
+    },
   },
   {
     timestamps: true,
