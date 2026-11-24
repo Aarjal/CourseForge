@@ -86,18 +86,23 @@
   - Interactive Course Details quiz callout linking directly to the course assessment.
   - Admin/Instructor Control Center Quiz Builder tab with question authoring, option editing, correct answer selection, and threshold configuration.
   - 56 server tests across 7 test suites and 24 client tests across 6 test suites passing cleanly; production Vite build verified.
-- [ ] **Phase 10: Payment Engine (Stripe + Mock Provider)**
+- [x] **Visual Design & Modern UI Overhaul (Decision 22)**
+  - Sticky glass navbar with blur effect, active route pills, user avatar & role tags, and responsive mobile toggle.
+  - High-converting split-card authentication page with brand highlights, Sign In / Register tabs, and password show/hide toggle.
+  - Modernized global design system (`Plus Jakarta Sans` typography, crisp slate/emerald palette, sleek metric cards, rounded buttons and badges).
+- [ ] **Phase 10: Engagement, Reviews & Certificates**
+  - Student reviews and 1-5 star ratings for enrolled courses.
+  - Automated verifiable Certificate of Completion upon 100% chapter completion + passed quiz.
+  - Student profile and certificate showcase page.
+- [ ] **Phase 11: Production Polish, Hardening & Security Audit**
+  - Security headers (`helmet`), brute-force protection (`express-rate-limit`), and input sanitization.
+  - Custom 404 page and global error boundaries.
+  - Production seed data tailored for Nepal tech curriculum.
+- [ ] **Phase 12: Nepali Payment Gateways (At-The-End Todo)**
   - Payment provider abstraction.
-  - Mock payment provider for offline testing.
-  - Stripe webhook-verified enrollment unlocking.
-- [ ] **Phase 11: Engagement, Certificates & Reviews**
-  - Student reviews and course star ratings.
-  - Automated PDF certificate generation on 100% course completion.
-  - Notification hooks.
-- [ ] **Phase 12: Polish, Hardening & Security Audit**
-  - Mobile responsiveness and accessibility pass.
-  - OWASP security review (helmet, rate limiting, mongo-sanitize, input validation).
-  - Production seed data.
+  - eSewa & Khalti payment integration.
+  - Manual mobile banking / Fonepay QR slip upload with admin approval.
+  - Mock payment provider for offline development.
 - [ ] **Phase 13: Deployment Readiness**
   - Render setup for backend, Vercel/Pages setup for frontend.
   - GitHub Actions CI (lint, test, build).
@@ -110,10 +115,10 @@
 ---
 
 ## Last Completed Step
-- **Phase 9 completed**: Quizzes & Assessment Engine with authoritative server-side scoring, answer key masking (Decision 21), Quiz and QuizAttempt models, client adapter integration across http and mock modes, dynamic student Quiz page with question-by-question review, and Admin Control Center Quiz Builder tab. 56 server tests and 24 client tests passing.
+- **Visual Design & Modern UI Overhaul completed**: Fixed broken navbar CSS, instituted sticky glass header with user badge, overhauled login/register page into a split-screen layout with tabs and password visibility toggle, modern typography (`Plus Jakarta Sans`) and slate/emerald palette. 56 server tests and 24 client tests passing.
 
 ## What's Next
-- **Phase 10: Payment Engine (Stripe + Mock Provider)** — Payment provider abstraction, mock payment checkout for offline testing, Stripe webhook-verified enrollment unlocking, and payment history.
+- **Phase 10: Engagement, Reviews & Certificates** — Course reviews and 1-5 star ratings, automated Certificate of Completion generation upon 100% progress and passed quiz, and student profile view.
 
 ## How to Run & Test Current State
 - **Client Dev**: `cd client && npm run dev` &rarr; `http://localhost:5173/CourseForge/`
