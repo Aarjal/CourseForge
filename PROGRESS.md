@@ -77,10 +77,15 @@
   - Interactive chapter video player and downloadable study materials list in Course Details.
   - Admin/Instructor Control Center media management (course thumbnail upload, chapter video and PDF attachments).
   - 44 server tests and 22 client tests passing across all test suites.
-- [ ] **Phase 9: Quizzes & Assessment Engine**
-  - Quiz, Question, Attempt models.
-  - Admin quiz builder.
-  - Student attempt tracking, scoring, pass thresholds.
+- [x] **Phase 9: Quizzes & Assessment Engine**
+  - Mongoose `Quiz` and `QuizAttempt` models with question subdocuments and passing score thresholds.
+  - Authoritative server-side evaluation engine (`quizController.submitQuizAttempt`) updating `Progress.quizDone = true` upon meeting passing score (Decision 21).
+  - Secure answer key masking: `correctAnswer` and `explanation` are stripped for students and exposed only to instructors/admins and in post-submission review.
+  - Client data-access adapter layer methods (`getQuizByCourse`, `createQuiz`, `updateQuiz`, `deleteQuiz`, `getQuizAttempts`, `submitQuiz`) with full mock adapter offline parity.
+  - Dynamic student Quiz page (`/quiz?courseId=...`) with question navigation, score display, pass/fail status banner, and question-by-question review with correct answer and explanation indicators.
+  - Interactive Course Details quiz callout linking directly to the course assessment.
+  - Admin/Instructor Control Center Quiz Builder tab with question authoring, option editing, correct answer selection, and threshold configuration.
+  - 56 server tests across 7 test suites and 24 client tests across 6 test suites passing cleanly; production Vite build verified.
 - [ ] **Phase 10: Payment Engine (Stripe + Mock Provider)**
   - Payment provider abstraction.
   - Mock payment provider for offline testing.
@@ -105,15 +110,15 @@
 ---
 
 ## Last Completed Step
-- **Phase 8 completed**: File upload pipeline with dual-mode Cloudinary & local disk storage fallback, Multer MIME type filtering, schema extension for thumbnails/videoUrl/materials, client adapter multipart upload support, admin media upload controls, student interactive video player and downloadable study materials viewer with locked content gating, and 44 server + 22 client tests passing.
+- **Phase 9 completed**: Quizzes & Assessment Engine with authoritative server-side scoring, answer key masking (Decision 21), Quiz and QuizAttempt models, client adapter integration across http and mock modes, dynamic student Quiz page with question-by-question review, and Admin Control Center Quiz Builder tab. 56 server tests and 24 client tests passing.
 
 ## What's Next
-- **Phase 9: Quizzes & Assessment Engine** — Quiz, Question, and Attempt models, admin quiz builder, student attempt tracking, scoring, and pass thresholds.
+- **Phase 10: Payment Engine (Stripe + Mock Provider)** — Payment provider abstraction, mock payment checkout for offline testing, Stripe webhook-verified enrollment unlocking, and payment history.
 
 ## How to Run & Test Current State
 - **Client Dev**: `cd client && npm run dev` &rarr; `http://localhost:5173/CourseForge/`
-- **Client Tests**: `cd client && npm test` (22 tests)
+- **Client Tests**: `cd client && npm test` (24 tests)
 - **Client Build**: `cd client && npm run build`
-- **Server Tests**: `cd server && npm test` (44 tests)
+- **Server Tests**: `cd server && npm test` (56 tests)
 - **Server Admin Seed**: `cd server && npm run seed:admin`
 - **Server**: `cd server && npm run dev`
