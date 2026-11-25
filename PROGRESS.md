@@ -103,10 +103,13 @@
   - eSewa & Khalti payment integration.
   - Manual mobile banking / Fonepay QR slip upload with admin approval.
   - Mock payment provider for offline development.
-- [ ] **Phase 13: Deployment Readiness**
-  - Render setup for backend, Vercel/Pages setup for frontend.
-  - GitHub Actions CI (lint, test, build).
-  - Production deployment runbook.
+- [x] **Phase 13: Deployment Readiness (Vercel & Render)**
+  - Dynamic base path in Vite for Vercel root and GitHub Pages subpath compatibility (`vite.config.js`).
+  - Vercel SPA rewrite routing configuration (`client/vercel.json`).
+  - Render Infrastructure-as-Code Blueprint service definition (`render.yaml`).
+  - Production CORS configuration for custom domains, Render backend, and Vercel preview domains (`server/src/app.js`).
+  - Production cross-site cookie support (`sameSite: "none"`, `secure: true`) for distributed frontend/backend domains (`server/src/controllers/authController.js`).
+  - Comprehensive step-by-step production deployment guide (`docs/DEPLOYMENT.md`).
 - [ ] **Phase 14: Mobile-Readiness & PWA**
   - Audit API contracts for mobile clients (Capacitor / React Native).
   - PWA manifest, service worker, offline shell.
@@ -115,9 +118,10 @@
 ---
 
 ## Last Completed Step
-- **Visual Design & Modern UI Overhaul completed**: Fixed broken navbar CSS, instituted sticky glass header with user badge, overhauled login/register page into a split-screen layout with tabs and password visibility toggle, modern typography (`Plus Jakarta Sans`) and slate/emerald palette. 56 server tests and 24 client tests passing.
+- **Official Vercel & Render Deployment Configuration**: Configured dynamic base path for Vite, Vercel SPA routing (`vercel.json`), Render web service Blueprint (`render.yaml`), production cross-site cookie transmission (`sameSite: "none", secure: true`), and production CORS validation. Documented full walk-through in `docs/DEPLOYMENT.md`. All 56 server tests and 24 client tests pass cleanly.
 
 ## What's Next
+- Deploy backend to Render and frontend to Vercel following `docs/DEPLOYMENT.md`.
 - **Phase 10: Engagement, Reviews & Certificates** — Course reviews and 1-5 star ratings, automated Certificate of Completion generation upon 100% progress and passed quiz, and student profile view.
 
 ## How to Run & Test Current State
