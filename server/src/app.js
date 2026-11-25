@@ -32,17 +32,25 @@ app.use("/uploads", express.static(path.join(__dirname, "../uploads")));
 app.use(
   cors({
     origin: (origin, callback) => {
-      if (!origin || allowedOrigins.includes(origin)) {
+      if (
+        !origin ||
+        allowedOrigins.includes(origin) ||
+        (process.env.NODE_ENV === "production" &&
+          (origin.endsWith(".vercel.app") || origin.endsWith(".onrender.com")))
+      ) {
         callback(null, true);
       } else {
-        callback(new Error("Not allowed by CORS"));
+        callback(new Error(`Not allowed by CORS: ${origin}`));
       }
     },
     credentials: true,
   })
 );
 
-// Health check endpoints
+// Root & Health check endpoints
+app.get("/", (req, res) => {
+  res.json({ name: "CourseForge API", status: "online", version: "v1" });
+});
 app.get("/api/health", (req, res) => {
   res.json({ message: "server is running yay" });
 });

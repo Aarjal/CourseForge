@@ -5,6 +5,13 @@ const {
   verifyToken,
 } = require("../utils/jwt");
 
+const getCookieOptions = () => ({
+  httpOnly: true,
+  secure: process.env.NODE_ENV === "production",
+  sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
+  maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
+});
+
 /**
  * @route   POST /api/v1/auth/register
  * @desc    Register a new user
@@ -29,12 +36,7 @@ const register = async (req, res, next) => {
     const refreshToken = generateRefreshToken(user);
 
     // Set refresh token as httpOnly cookie (browser clients)
-    res.cookie("refreshToken", refreshToken, {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
-      sameSite: "strict",
-      maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
-    });
+    res.cookie("refreshToken", refreshToken, getCookieOptions());
 
     res.status(201).json({
       user: {
@@ -80,12 +82,7 @@ const login = async (req, res, next) => {
     const accessToken = generateAccessToken(user);
     const refreshToken = generateRefreshToken(user);
 
-    res.cookie("refreshToken", refreshToken, {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
-      sameSite: "strict",
-      maxAge: 7 * 24 * 60 * 60 * 1000,
-    });
+    res.cookie("refreshToken", refreshToken, getCookieOptions());
 
     res.status(200).json({
       user: {
@@ -155,10 +152,9 @@ const refresh = async (req, res, next) => {
  */
 const logout = (req, res) => {
   res.cookie("refreshToken", "", {
-    httpOnly: true,
-    secure: process.env.NODE_ENV === "production",
-    sameSite: "strict",
+    ...getCookieOptions(),
     expires: new Date(0),
+    maxAge: 0,
   });
 
   res.status(200).json({ message: "Logged out successfully" });
